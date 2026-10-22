@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ditutti · Cursos y talleres</title>
-  <meta name="description" content="Cursos y talleres de Ditutti del mes: horarios, precios y lugares disponibles. Aparta tu lugar por WhatsApp.">
+  <title>DiTutti · Talleres y experiencias</title>
+  <meta name="description" content="Talleres y experiencias en DiTutti Concept Store, Zona Satélite: fechas, horarios, precios y lugares disponibles. Aparta tu lugar por WhatsApp.">
+  <link rel="icon" href="logo-ditutti.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -21,6 +22,7 @@
       --warn: #b8741a;
       --off: #a89a8e;
       --wa: #1f9d55;
+      --chip: #f1e7da;
       --radius: 18px;
     }
     @media (prefers-color-scheme: dark) {
@@ -36,7 +38,9 @@
         --warn: #e0a34f;
         --off: #6f6359;
         --wa: #3cc276;
+        --chip: #30281f;
       }
+      .logo { background: #f7f1e8; }
     }
     * { box-sizing: border-box; }
     body {
@@ -45,23 +49,25 @@
       color: var(--ink);
       font-family: "DM Sans", system-ui, sans-serif;
       line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
     }
     .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
 
-    header { padding: 56px 0 28px; }
+    header { padding: 32px 0 24px; }
+    .logo { display: block; width: 108px; height: 108px; border-radius: 50%; object-fit: contain; padding: 2px; }
     .brand {
       font-family: "Fraunces", Georgia, serif;
       font-weight: 700;
-      font-size: clamp(2.6rem, 8vw, 4.2rem);
+      font-size: clamp(2.1rem, 8vw, 3.4rem);
       letter-spacing: -0.02em;
-      line-height: 1;
-      margin: 0;
+      line-height: 1.05;
+      margin: 18px 0 0;
     }
     .brand span { color: var(--accent); }
-    .lead { margin: 14px 0 0; color: var(--muted); font-size: 1.1rem; max-width: 46ch; }
+    .lead { margin: 12px 0 0; color: var(--muted); font-size: 1.05rem; max-width: 48ch; }
     .month {
       display: inline-block;
-      margin-top: 22px;
+      margin-top: 20px;
       padding: 6px 14px;
       border: 1.5px solid var(--ink);
       border-radius: 999px;
@@ -84,7 +90,7 @@
     }
     .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
-    .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); align-items: start; }
 
     .card {
       background: var(--surface);
@@ -94,8 +100,8 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      min-width: 0;
     }
-    .card.full { opacity: .72; }
     .top { display: flex; gap: 14px; align-items: flex-start; }
     .date {
       flex: none;
@@ -113,21 +119,78 @@
     .tag { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
     .card h2 { font-family: "Fraunces", serif; font-weight: 500; font-size: 1.35rem; line-height: 1.2; margin: 2px 0 0; }
     .meta { margin: 0; padding: 0; list-style: none; color: var(--muted); font-size: .95rem; display: grid; gap: 2px; }
+    .meta .when { color: var(--ink); font-weight: 500; }
+    .meta small { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
     .desc { margin: 0; font-size: .98rem; }
+
+    /* Selectores */
+    .pick { display: grid; gap: 8px; min-width: 0; }
+    .pick-label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; margin: 0 -2px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+    .chips.wrap-chips { flex-wrap: wrap; overflow: visible; }
+    .chip {
+      flex: none;
+      scroll-snap-align: start;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.25;
+      padding: 8px 12px;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: var(--chip);
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .chip small { display: block; font-size: .72rem; font-weight: 500; color: var(--muted); }
+    .chip small.low { color: var(--warn); font-weight: 700; }
+    .chip.sold { color: var(--off); text-decoration: line-through; }
+    .chip.sold small { text-decoration: none; display: block; }
+    .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); text-decoration: none; }
+    .chip[aria-pressed="true"] small { color: var(--bg); opacity: .8; }
+    .hours { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+    .linkbtn {
+      font: inherit; font-weight: 700; font-size: .92rem;
+      background: none; border: 0; padding: 4px 0; color: var(--accent); cursor: pointer;
+      justify-self: start;
+    }
+
+    .qty { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; }
+    .stepper button {
+      font: inherit; font-size: 1.2rem; font-weight: 700;
+      width: 44px; height: 40px; border: 0; background: none; color: var(--ink); cursor: pointer;
+    }
+    .stepper button:disabled { color: var(--off); cursor: default; }
+    .stepper output { min-width: 28px; text-align: center; font-weight: 700; }
 
     .spots { display: grid; gap: 6px; }
     .spots-label { display: flex; justify-content: space-between; font-size: .9rem; font-weight: 700; }
     .spots-label .left { color: var(--ok); }
     .spots-label .left.low { color: var(--warn); }
-    .spots-label .left.none { color: var(--off); }
+    .spots-label .left.none { color: var(--off); text-transform: uppercase; letter-spacing: .06em; }
     .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
     .bar i { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
+    .open { font-size: .9rem; font-weight: 700; color: var(--ok); }
+    .pending { font-size: .9rem; font-weight: 500; color: var(--muted); }
+
+    details { border-top: 1px solid var(--line); padding-top: 10px; font-size: .95rem; }
+    summary { cursor: pointer; font-weight: 700; color: var(--accent); list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: " ▾"; }
+    details[open] summary::after { content: " ▴"; }
+    details h4 { margin: 14px 0 4px; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    details p { margin: 0 0 8px; }
+    details ul { margin: 0; padding-left: 20px; }
+    .notice { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--chip); font-size: .9rem; }
 
     .bottom { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .price { font-family: "Fraunces", serif; font-size: 1.6rem; font-weight: 700; }
     .price small { font-family: "DM Sans", sans-serif; font-size: .8rem; font-weight: 500; color: var(--muted); }
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 11px 18px;
       border-radius: 999px;
       background: var(--wa);
@@ -137,139 +200,465 @@
     }
     .btn svg { width: 18px; height: 18px; fill: currentColor; }
     .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+    .btn.disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
 
     .empty { color: var(--muted); padding: 40px 0; text-align: center; }
 
     .how { margin: 48px 0 0; padding: 26px; border-radius: var(--radius); border: 1.5px dashed var(--line); }
     .how h3 { font-family: "Fraunces", serif; font-weight: 500; margin: 0 0 10px; font-size: 1.3rem; }
     .how ol { margin: 0; padding-left: 20px; color: var(--muted); }
-    footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
+    footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; display: grid; gap: 4px; }
+    footer a { color: inherit; }
+    @media (max-width: 420px) {
+      .bottom .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
   <header class="wrap">
-    <h1 class="brand">Ditutti<span>.</span></h1>
-    <p class="lead">Cursos y talleres para aprender haciendo. Elige el tuyo y aparta tu lugar por WhatsApp.</p>
+    <img class="logo" src="logo-ditutti.png" alt="DiTutti Concept Store" width="108" height="108">
+    <h1 class="brand">Talleres y experiencias<span>.</span></h1>
+    <p class="lead">Aprende haciendo en DiTutti. Elige tu actividad, fecha y horario, y aparta tu lugar por WhatsApp.</p>
     <span class="month" id="mes"></span>
   </header>
 
   <main class="wrap">
-    <div class="filters" role="group" aria-label="Filtrar">
-      <button type="button" data-f="todos" aria-pressed="true">Todos</button>
-      <button type="button" data-f="Curso" aria-pressed="false">Cursos</button>
-      <button type="button" data-f="Taller" aria-pressed="false">Talleres</button>
-      <button type="button" data-f="disponibles" aria-pressed="false">Con lugares</button>
-    </div>
+    <div class="filters" id="filtros" role="group" aria-label="Filtrar"></div>
 
     <div class="grid" id="grid"></div>
 
     <section class="how">
       <h3>¿Cómo apartar?</h3>
       <ol>
-        <li>Toca <strong>“Apartar por WhatsApp”</strong> en el curso o taller que te interese.</li>
-        <li>Se abrirá un mensaje ya escrito; solo agrega tu nombre y envíalo.</li>
-        <li>Te confirmamos tu lugar y los datos para el pago.</li>
+        <li>Elige la fecha, el horario y el número de personas.</li>
+        <li>Toca <strong>“Apartar por WhatsApp”</strong>: se abrirá un mensaje ya escrito.</li>
+        <li>Agrega tu nombre (y en Punch Needle, el diseño que quieres) y envíalo.</li>
+        <li>Te confirmamos tu lugar por WhatsApp.</li>
       </ol>
     </section>
   </main>
 
-  <footer class="wrap">© Ditutti · Los lugares se actualizan conforme se confirman los apartados.</footer>
+  <footer class="wrap" id="pie"></footer>
 
   <script src="cursos.js"></script>
   <script>
     (function () {
-      var data = window.DITUTTI || { cursos: [] };
-      var MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+      var data = window.DITUTTI || { actividades: [] };
+      var POR = "POR_CONFIRMAR";
+      var MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
       var DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+      var PLURAL = { Curso: "Cursos", Taller: "Talleres", Experiencia: "Experiencias" };
       var WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>';
-      var filtro = "todos";
+      var MAX_PERSONAS_CUPO_ABIERTO = 20;
 
+      var ahora = new Date();
+      var hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+      var filtro = "todos";
+      var estado = {};
+      var info = {};
+
+      /* ---------- utilidades ---------- */
+      function definido(v) { return v !== undefined && v !== null && v !== "" && v !== POR; }
       function esc(s) {
         return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
           return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
         });
       }
-      function parseFecha(f) { var p = f.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
-      function hora(h) {
-        var p = h.split(":"), hh = +p[0], ap = hh >= 12 ? "pm" : "am";
-        hh = hh % 12 || 12;
-        return hh + ":" + p[1] + " " + ap;
+      function pad(n) { return (n < 10 ? "0" : "") + n; }
+      function clave(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+      function leer(k) { var p = k.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+      function sumarDias(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+      function diasEntre(a, b) { return Math.round((b - a) / 864e5); }
+      function minutos(h) { var p = h.split(":"); return +p[0] * 60 + +p[1]; }
+      function hora12(min) {
+        var h = Math.floor(min / 60) % 24, m = min % 60;
+        return (h % 12 || 12) + ":" + pad(m) + (h >= 12 ? " p. m." : " a. m.");
       }
-      function precio(n) { return "$" + Number(n).toLocaleString("es-MX"); }
+      function fechaLarga(k) {
+        var d = leer(k);
+        var s = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
+        return d.getFullYear() !== hoy.getFullYear() ? s + " de " + d.getFullYear() : s;
+      }
+      function mayus(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+      function duracionTexto(min) {
+        if (!definido(min)) return "";
+        if (min % 60 === 0) return min / 60 + (min === 60 ? " hora" : " horas");
+        return min + " minutos";
+      }
       function waLink(texto) {
         return "https://wa.me/" + String(data.whatsapp).replace(/\D/g, "") + "?text=" + encodeURIComponent(texto);
       }
 
-      function card(c) {
-        var d = parseFecha(c.fecha);
-        var libres = Math.max(0, c.cupo - c.apartados);
-        var lleno = libres === 0;
-        var pct = c.cupo ? Math.min(100, (c.apartados / c.cupo) * 100) : 100;
-        var cuando = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
-        var horario = hora(c.inicio) + " – " + hora(c.fin);
-        var clase = lleno ? "none" : libres <= 2 ? "low" : "";
-        var leyenda = lleno ? "Agotado" : libres === 1 ? "¡Queda 1 lugar!" : "Quedan " + libres + " lugares";
+      /* ---------- fechas recurrentes ---------- */
+      function generarFechas(a) {
+        var r = a.recurrencia || {};
+        var n = a.fechasAMostrar || 8;
+        var bloq = {};
+        (a.fechasBloqueadas || []).forEach(function (f) { bloq[f] = true; });
+        var inicio = r.fechaInicial ? leer(r.fechaInicial) : hoy;
+        var desde = inicio > hoy ? inicio : hoy;
+        var out = [], d, i;
 
-        var msg = lleno
-          ? "Hola Ditutti 👋 Me interesa el " + c.tipo.toLowerCase() + " \"" + c.nombre + "\" (" + cuando + "). Si se libera un lugar, ¿me avisan? Mi nombre es: "
-          : "Hola Ditutti 👋 Quiero apartar un lugar en el " + c.tipo.toLowerCase() + " \"" + c.nombre + "\" del " + cuando + ", de " + horario + ". Mi nombre es: ";
+        if (r.tipo === "intervalo" && r.intervaloDias > 0) {
+          d = inicio;
+          if (d < hoy) d = sumarDias(d, Math.ceil(diasEntre(d, hoy) / r.intervaloDias) * r.intervaloDias);
+          for (i = 0; out.length < n && i < 500; i++) {
+            if (!bloq[clave(d)]) out.push(clave(d));
+            d = sumarDias(d, r.intervaloDias);
+          }
+        } else if (r.tipo === "semanal" && r.diasSemana && r.diasSemana.length) {
+          d = desde;
+          for (i = 0; out.length < n && i < 400; i++) {
+            if (r.diasSemana.indexOf(d.getDay()) !== -1 && !bloq[clave(d)]) out.push(clave(d));
+            d = sumarDias(d, 1);
+          }
+        } else if (r.tipo === "primerDiaDelMes") {
+          for (i = 0; out.length < n && i < 60; i++) {
+            var primero = new Date(desde.getFullYear(), desde.getMonth() + i, 1);
+            d = sumarDias(primero, (r.diaSemana - primero.getDay() + 7) % 7);
+            if (d >= desde && !bloq[clave(d)]) out.push(clave(d));
+          }
+        }
 
-        var boton = lleno
-          ? '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(waLink(msg)) + '">Avísame si se libera</a>'
-          : '<a class="btn" target="_blank" rel="noopener" href="' + esc(waLink(msg)) + '">' + WA_ICON + "Apartar por WhatsApp</a>";
+        (a.fechasEspeciales || []).forEach(function (f) {
+          if (leer(f) >= hoy && !bloq[f] && out.indexOf(f) === -1) out.push(f);
+        });
+        return out.sort();
+      }
 
-        return (
-          '<article class="card' + (lleno ? " full" : "") + '">' +
-            '<div class="top">' +
-              '<div class="date"><span class="d">' + d.getDate() + '</span><span class="m">' + MESES[d.getMonth()] + "</span></div>" +
-              "<div>" +
-                '<div class="tag">' + esc(c.tipo) + "</div>" +
-                "<h2>" + esc(c.nombre) + "</h2>" +
-              "</div>" +
+      function tipoCupo(a) {
+        if (a.cupo === null) return "abierto";
+        if (typeof a.cupo === "number") return "limitado";
+        return "pendiente";
+      }
+
+      function horariosDe(a, k) {
+        if (!Array.isArray(a.horarios)) return [];
+        var ap = (a.apartadosPorFecha || {})[k];
+        var esHoy = k === clave(hoy);
+        var minAhora = ahora.getHours() * 60 + ahora.getMinutes();
+        return a.horarios
+          .map(function (h, idx) {
+            var apartados = typeof ap === "number" ? (idx === 0 ? ap : 0) : (ap && ap[h]) || 0;
+            var ini = minutos(h);
+            var lim = tipoCupo(a) === "limitado";
+            var libres = lim ? Math.max(0, a.cupo - apartados) : null;
+            return {
+              hora: h,
+              inicio: ini,
+              texto: hora12(ini) + (definido(a.duracionMinutos) ? " – " + hora12(ini + a.duracionMinutos) : ""),
+              apartados: apartados,
+              libres: libres,
+              lleno: lim && libres === 0,
+            };
+          })
+          .filter(function (s) { return !esHoy || s.inicio > minAhora; });
+      }
+
+      function prepararActividad(a) {
+        var pendiente = !Array.isArray(a.horarios) || tipoCupo(a) === "pendiente";
+        var fechas = generarFechas(a)
+          .map(function (k) {
+            var slots = horariosDe(a, k);
+            return { clave: k, slots: slots, lleno: slots.length > 0 && slots.every(function (s) { return s.lleno; }) };
+          })
+          .filter(function (f) { return pendiente || f.slots.length > 0; });
+        return { a: a, fechas: fechas, pendiente: pendiente, multi: !pendiente && a.horarios.length > 1 };
+      }
+
+      function hayLugares(x) {
+        if (x.pendiente) return false;
+        return x.fechas.some(function (f) { return !f.lleno; });
+      }
+
+      function fechaSel(x) {
+        var st = estado[x.a.id];
+        return x.fechas.filter(function (f) { return f.clave === st.fecha; })[0] || x.fechas[0];
+      }
+      function slotSel(x, f) {
+        var st = estado[x.a.id];
+        if (!f) return null;
+        if (f.slots.length === 1) return f.slots[0];
+        return f.slots.filter(function (s) { return s.hora === st.hora; })[0] || null;
+      }
+      function maxPersonas(x, s) {
+        if (tipoCupo(x.a) === "abierto") return MAX_PERSONAS_CUPO_ABIERTO;
+        return s && s.libres ? s.libres : 1;
+      }
+
+      /* ---------- mensajes de WhatsApp ---------- */
+      function msgReserva(a, f, s, personas) {
+        var lineas = [
+          "Hola, quiero apartar un lugar para:",
+          a.nombre,
+          "Fecha: " + fechaLarga(f.clave),
+          "Horario: " + s.texto,
+          "Número de lugares: " + personas,
+          "",
+        ];
+        if (a.pedirDiseno) lineas.push("Diseño que quiero: ", "");
+        lineas.push("Mi nombre es: ");
+        return lineas.join("\n");
+      }
+      function msgAgotado(a, f, s) {
+        return "Hola, me interesa " + a.nombre + " del " + fechaLarga(f.clave) + (s ? " (" + s.texto + ")" : "") +
+          ". Veo que está agotado. ¿Me pueden avisar si se libera un lugar?";
+      }
+      function msgInformes(a, f) {
+        return "Hola, me interesa " + a.nombre + (f ? " del " + fechaLarga(f.clave) : "") +
+          ". ¿Me pueden compartir el horario y los detalles?";
+      }
+
+      /* ---------- tarjeta ---------- */
+      function chipFecha(x, f, sel) {
+        var d = leer(f.clave);
+        var nota = "";
+        if (!x.pendiente && tipoCupo(x.a) === "limitado") {
+          if (f.lleno) nota = "<small>Agotado</small>";
+          else if (!x.multi) {
+            var l = f.slots[0].libres;
+            nota = "<small" + (l <= 2 ? ' class="low"' : "") + ">" + (l === 1 ? "Queda 1" : "Quedan " + l) + "</small>";
+          }
+        }
+        return '<button type="button" class="chip' + (f.lleno ? " sold" : "") + '" data-act="fecha" data-fecha="' + f.clave + '" aria-pressed="' + sel + '">' +
+          mayus(DIAS[d.getDay()].slice(0, 3)) + " " + d.getDate() + " " + MESES[d.getMonth()].slice(0, 3) + nota + "</button>";
+      }
+
+      function chipHora(s, sel) {
+        var nota = s.libres === null ? "" : s.lleno ? "<small>Agotado</small>" :
+          "<small" + (s.libres <= 2 ? ' class="low"' : "") + ">" + (s.libres === 1 ? "Queda 1" : "Quedan " + s.libres) + "</small>";
+        return '<button type="button" class="chip' + (s.lleno ? " sold" : "") + '" data-act="hora" data-hora="' + s.hora + '" aria-pressed="' + sel + '">' +
+          hora12(s.inicio) + nota + "</button>";
+      }
+
+      function bloqueLugares(x, s) {
+        var t = tipoCupo(x.a);
+        if (x.pendiente) return '<div class="pending">Cupo por confirmar</div>';
+        if (t === "abierto") return '<div class="open">Cupo abierto</div>';
+        if (!s) return "";
+        var clase = s.lleno ? "none" : s.libres <= 2 ? "low" : "";
+        var leyenda = s.lleno ? "Agotado" : s.libres === 1 ? "¡Queda 1 lugar!" : "Quedan " + s.libres + " lugares";
+        var pct = Math.min(100, (s.apartados / x.a.cupo) * 100);
+        return '<div class="spots">' +
+          '<div class="spots-label"><span class="left ' + clase + '">' + leyenda + "</span><span>" + s.apartados + " / " + x.a.cupo + "</span></div>" +
+          '<div class="bar" role="progressbar" aria-label="Lugares apartados" aria-valuemin="0" aria-valuemax="' + x.a.cupo + '" aria-valuenow="' + s.apartados + '"><i style="width:' + pct + '%"></i></div>' +
+          "</div>";
+      }
+
+      function detalles(x) {
+        var a = x.a, h = "";
+        var desc = Array.isArray(a.descripcion) ? a.descripcion : [];
+        if (desc.length > 1) h += desc.slice(1).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+        if (definido(a.nivel)) h += "<h4>Nivel</h4><p>" + esc(a.nivel) + "</p>";
+        if (definido(a.duracionMinutos)) h += "<h4>Duración</h4><p>" + duracionTexto(a.duracionMinutos) + "</p>";
+        if (Array.isArray(a.incluye) && a.incluye.length) {
+          h += "<h4>Qué incluye</h4><ul>" + a.incluye.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>";
+        }
+        if (definido(a.aviso)) h += '<div class="notice"><strong>Aviso importante:</strong> ' + esc(a.aviso) + "</div>";
+        if (definido(a.politicaCancelacion)) h += "<h4>Política de cancelación</h4><p>" + esc(a.politicaCancelacion) + "</p>";
+        if (!h) return "";
+        return '<details data-id="' + a.id + '"' + (estado[a.id].detalles ? " open" : "") + "><summary>Ver detalles</summary>" + h + "</details>";
+      }
+
+      function precio(a) {
+        if (a.precio === 0) return '<div class="price">Gratis</div>';
+        if (typeof a.precio === "number") return '<div class="price">$' + a.precio.toLocaleString("es-MX") + " <small>MXN por persona</small></div>";
+        return "<div></div>";
+      }
+
+      function boton(x, f, s) {
+        var a = x.a, st = estado[a.id];
+        if (x.pendiente) {
+          return '<a class="btn" target="_blank" rel="noopener" href="' + esc(waLink(msgInformes(a, f))) + '">' + WA_ICON + "Pedir informes por WhatsApp</a>";
+        }
+        if (f.lleno || (s && s.lleno)) {
+          return '<a class="btn ghost" target="_blank" rel="noopener" href="' + esc(waLink(msgAgotado(a, f, s))) + '">Avísame si se libera</a>';
+        }
+        if (!s) return '<span class="btn disabled" aria-disabled="true">Elige un horario</span>';
+        var texto = a.precio === 0 ? "Reservar por WhatsApp" : "Apartar por WhatsApp";
+        return '<a class="btn" target="_blank" rel="noopener" href="' + esc(waLink(msgReserva(a, f, s, st.personas))) + '">' + WA_ICON + texto + "</a>";
+      }
+
+      function tarjeta(x) {
+        var a = x.a, st = estado[a.id];
+        var f = fechaSel(x);
+        var s = slotSel(x, f);
+        var d = leer(f.clave);
+        var lleno = !x.pendiente && (f.lleno || (s && s.lleno));
+        var esPrimera = f.clave === x.fechas[0].clave;
+
+        var horario;
+        if (x.pendiente) horario = "Horario por confirmar";
+        else if (s) horario = s.texto;
+        else horario = "Inicio cada hora, de " + hora12(f.slots[0].inicio) + " a " + hora12(f.slots[f.slots.length - 1].inicio);
+        if (definido(a.duracionMinutos) && !x.pendiente) horario += " · " + duracionTexto(a.duracionMinutos);
+
+        var meta = '<li class="when"><small>' + (esPrimera ? "Próxima fecha" : "Fecha elegida") + "</small>🗓 " + mayus(fechaLarga(f.clave)) + "</li>" +
+          "<li>🕒 " + esc(horario) + "</li>";
+        if (a.mostrarUbicacion) meta += "<li>📍 " + esc(data.ubicacion) + "</li>";
+        if (a.estacionamiento) meta += "<li>✓ Contamos con estacionamiento</li>";
+
+        var desc = Array.isArray(a.descripcion) && a.descripcion.length ? '<p class="desc">' + esc(a.descripcion[0]) + "</p>" : "";
+
+        // Selectores
+        var sel = "";
+        if (x.multi) {
+          sel += '<div class="pick"><span class="pick-label">1. Elige fecha</span><div class="chips">' +
+            x.fechas.map(function (ff) { return chipFecha(x, ff, ff.clave === f.clave); }).join("") + "</div></div>";
+          sel += '<div class="pick"><span class="pick-label">2. Elige horario</span><div class="hours">' +
+            f.slots.map(function (ss) { return chipHora(ss, !!s && ss.hora === s.hora); }).join("") + "</div></div>";
+        } else if (x.fechas.length > 1) {
+          sel += '<div class="pick"><button type="button" class="linkbtn" data-act="ver-fechas" aria-expanded="' + !!st.verFechas + '">' +
+            (st.verFechas ? "Ocultar fechas ▴" : "Ver próximas fechas ▾") + "</button>" +
+            (st.verFechas ? '<div class="chips">' + x.fechas.map(function (ff) { return chipFecha(x, ff, ff.clave === f.clave); }).join("") + "</div>" : "") +
+            "</div>";
+        }
+        if (!x.pendiente && !lleno && (s || x.multi)) {
+          var max = maxPersonas(x, s);
+          if (st.personas > max) st.personas = max;
+          sel += '<div class="pick qty"><span class="pick-label">' + (x.multi ? "3. " : "") + "Número de personas</span>" +
+            '<span class="stepper"><button type="button" data-act="menos" aria-label="Quitar una persona"' + (st.personas <= 1 ? " disabled" : "") + ">−</button>" +
+            "<output>" + st.personas + "</output>" +
+            '<button type="button" data-act="mas" aria-label="Agregar una persona"' + (!s || st.personas >= max ? " disabled" : "") + ">+</button></span></div>";
+        }
+
+        return '<article class="card' + (lleno ? " full" : "") + '" data-id="' + a.id + '">' +
+          '<div class="top">' +
+            '<div class="date"><span class="d">' + d.getDate() + '</span><span class="m">' + MESES[d.getMonth()].slice(0, 3) + "</span></div>" +
+            "<div>" +
+              '<div class="tag">' + esc(a.tipo) + "</div>" +
+              "<h2>" + esc(a.nombre) + "</h2>" +
             "</div>" +
-            '<ul class="meta">' +
-              "<li>🗓 " + esc(c.sesiones || cuando.charAt(0).toUpperCase() + cuando.slice(1)) + "</li>" +
-              "<li>🕒 " + esc(horario) + "</li>" +
-            "</ul>" +
-            '<p class="desc">' + esc(c.descripcion) + "</p>" +
-            '<div class="spots">' +
-              '<div class="spots-label"><span class="left ' + clase + '">' + leyenda + "</span><span>" + c.apartados + " / " + c.cupo + "</span></div>" +
-              '<div class="bar" role="progressbar" aria-label="Lugares apartados" aria-valuemin="0" aria-valuemax="' + c.cupo + '" aria-valuenow="' + c.apartados + '"><i style="width:' + pct + '%"></i></div>' +
-            "</div>" +
-            '<div class="bottom">' +
-              '<div class="price">' + precio(c.precio) + " <small>MXN</small></div>" +
-              boton +
-            "</div>" +
-          "</article>"
-        );
+          "</div>" +
+          '<ul class="meta">' + meta + "</ul>" +
+          desc +
+          sel +
+          bloqueLugares(x, s) +
+          detalles(x) +
+          '<div class="bottom">' + precio(a) + boton(x, f, s) + "</div>" +
+          "</article>";
+      }
+
+      /* ---------- render ---------- */
+      function preparar() {
+        data.actividades.forEach(function (a) {
+          if (a.visible === false) return;
+          var x = prepararActividad(a);
+          if (!x.fechas.length) return;
+          info[a.id] = x;
+          if (!estado[a.id]) {
+            var primeraLibre = x.fechas.filter(function (f) { return !f.lleno; })[0] || x.fechas[0];
+            estado[a.id] = { fecha: primeraLibre.clave, hora: null, personas: 1, verFechas: false, detalles: false };
+          }
+        });
+      }
+
+      function visibles() {
+        return data.actividades
+          .map(function (a) { return info[a.id]; })
+          .filter(Boolean)
+          .filter(function (x) {
+            if (filtro === "todos") return true;
+            if (filtro === "disponibles") return hayLugares(x);
+            return x.a.tipo === filtro;
+          });
       }
 
       function render() {
-        var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
-        var lista = data.cursos
-          .filter(function (c) { return parseFecha(c.fecha) >= hoy || c.sesiones; })
-          .filter(function (c) {
-            if (filtro === "todos") return true;
-            if (filtro === "disponibles") return c.cupo - c.apartados > 0;
-            return c.tipo === filtro;
-          })
-          .sort(function (a, b) { return (a.fecha + a.inicio).localeCompare(b.fecha + b.inicio); });
-
+        var lista = visibles();
         document.getElementById("grid").innerHTML = lista.length
-          ? lista.map(card).join("")
+          ? lista.map(tarjeta).join("")
           : '<p class="empty">No hay actividades con este filtro por ahora.</p>';
+        centrarSeleccion(document.getElementById("grid"));
       }
 
-      document.getElementById("mes").textContent = data.mes || "";
-      document.querySelectorAll(".filters button").forEach(function (b) {
-        b.addEventListener("click", function () {
-          filtro = b.dataset.f;
-          document.querySelectorAll(".filters button").forEach(function (x) {
-            x.setAttribute("aria-pressed", String(x === b));
-          });
-          render();
+      function renderTarjeta(id) {
+        var el = document.querySelector('.card[data-id="' + id + '"]');
+        if (!el) return;
+        var tmp = document.createElement("div");
+        tmp.innerHTML = tarjeta(info[id]);
+        var nuevo = tmp.firstChild;
+        el.replaceWith(nuevo);
+        centrarSeleccion(nuevo);
+      }
+
+      // Desplaza cada fila de fechas para que la fecha elegida quede a la vista
+      function centrarSeleccion(raiz) {
+        raiz.querySelectorAll(".chips").forEach(function (fila) {
+          var sel = fila.querySelector('[aria-pressed="true"]');
+          if (sel) fila.scrollLeft = sel.offsetLeft - fila.offsetLeft - (fila.clientWidth - sel.offsetWidth) / 2;
         });
+      }
+
+      function renderFiltros() {
+        var todas = Object.keys(info).map(function (k) { return info[k]; });
+        var opciones = [{ f: "todos", t: "Todos" }];
+        ["Curso", "Taller", "Experiencia"].forEach(function (tipo) {
+          if (todas.some(function (x) { return x.a.tipo === tipo; })) opciones.push({ f: tipo, t: PLURAL[tipo] });
+        });
+        if (todas.some(hayLugares)) opciones.push({ f: "disponibles", t: "Con lugares" });
+        var cont = document.getElementById("filtros");
+        cont.innerHTML = opciones.map(function (o) {
+          return '<button type="button" data-f="' + o.f + '" aria-pressed="' + (o.f === filtro) + '">' + o.t + "</button>";
+        }).join("");
+        cont.style.display = opciones.length > 2 ? "" : "none";
+      }
+
+      function renderEncabezado() {
+        var primeras = Object.keys(info).map(function (k) { return info[k].fechas[0].clave; }).sort();
+        var d = primeras.length ? leer(primeras[0]) : hoy;
+        document.getElementById("mes").textContent = mayus(MESES[d.getMonth()]) + " " + d.getFullYear();
+        var tel = data.whatsappVisible || data.whatsapp;
+        document.getElementById("pie").innerHTML =
+          "<span>" + esc(data.ubicacion || "") + "</span>" +
+          '<span>WhatsApp: <a href="' + esc(waLink("Hola, me gustaría información sobre los talleres de DiTutti.")) + '" target="_blank" rel="noopener">' + esc(tel) + "</a></span>" +
+          "<span>Los lugares se actualizan conforme se confirman los apartados.</span>";
+      }
+
+      /* ---------- eventos ---------- */
+      document.getElementById("filtros").addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-f]");
+        if (!b) return;
+        filtro = b.dataset.f;
+        renderFiltros();
+        render();
       });
+
+      document.getElementById("grid").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-act]");
+        if (!b) return;
+        var id = b.closest(".card").dataset.id;
+        var x = info[id], st = estado[id];
+        switch (b.dataset.act) {
+          case "fecha":
+            st.fecha = b.dataset.fecha;
+            st.hora = null;
+            break;
+          case "hora":
+            st.hora = b.dataset.hora;
+            break;
+          case "ver-fechas":
+            st.verFechas = !st.verFechas;
+            break;
+          case "mas":
+            st.personas = Math.min(st.personas + 1, maxPersonas(x, slotSel(x, fechaSel(x))));
+            break;
+          case "menos":
+            st.personas = Math.max(1, st.personas - 1);
+            break;
+          default:
+            return;
+        }
+        renderTarjeta(id);
+      });
+
+      document.getElementById("grid").addEventListener("toggle", function (e) {
+        if (e.target.tagName === "DETAILS" && estado[e.target.dataset.id]) estado[e.target.dataset.id].detalles = e.target.open;
+      }, true);
+
+      preparar();
+      renderEncabezado();
+      renderFiltros();
       render();
     })();
   </script>
