@@ -197,6 +197,10 @@
       color: #fff;
       font-weight: 700;
       text-decoration: none;
+      border: 0;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
     }
     .btn svg { width: 18px; height: 18px; fill: currentColor; }
     .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
@@ -212,6 +216,80 @@
     @media (max-width: 420px) {
       .bottom .btn { width: 100%; }
     }
+
+    /* Pestañas */
+    .tabs { display: flex; gap: 0; margin: 0 auto 22px; padding: 4px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); width: fit-content; max-width: calc(100% - 32px); }
+    .tabs button {
+      font: inherit; font-weight: 700; font-size: .95rem;
+      padding: 10px 22px; border: 0; border-radius: 999px;
+      background: none; color: var(--muted); cursor: pointer;
+    }
+    .tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+    [hidden] { display: none !important; }
+
+    /* Calendario */
+    .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+    .cal-head h2 { font-family: "Fraunces", serif; font-weight: 500; font-size: 1.5rem; margin: 0; text-align: center; }
+    .cal-nav {
+      flex: none; width: 44px; height: 44px; border-radius: 50%;
+      border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+      font: inherit; font-size: 1.3rem; cursor: pointer;
+    }
+    .cal-nav:disabled { opacity: .35; cursor: default; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 14px; font-size: .85rem; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
+    .cal {
+      display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    }
+    .dow { padding: 8px 0; text-align: center; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border-bottom: 1px solid var(--line); }
+    .day {
+      font: inherit; color: inherit; text-align: left;
+      min-width: 0; min-height: 64px; padding: 5px 4px 6px;
+      display: flex; flex-direction: column; gap: 3px;
+      background: none; border: 0; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .day:nth-child(7n) { border-right: 0; }
+    .day.out { cursor: default; }
+    .day.past { opacity: .4; cursor: default; }
+    .day .n { font-size: .85rem; font-weight: 700; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; }
+    .day.today .n { background: var(--accent); color: var(--accent-ink); }
+    .day[aria-pressed="true"] { background: var(--chip); box-shadow: inset 0 0 0 2px var(--ink); }
+    .evs { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .ev {
+      display: block; min-width: 0; font-size: .72rem; line-height: 1.25; padding: 2px 5px;
+      border-radius: 6px; border-left: 3px solid var(--c);
+      background: color-mix(in srgb, var(--c) 16%, transparent);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ev.sold { opacity: .55; text-decoration: line-through; }
+    @media (max-width: 699px) {
+      .day { min-height: 56px; align-items: center; }
+      .evs { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .ev { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--c); font-size: 0; }
+    }
+
+    .agenda { margin-top: 18px; display: grid; gap: 10px; }
+    .agenda > h3 { font-family: "Fraunces", serif; font-weight: 500; font-size: 1.25rem; margin: 0 0 2px; }
+    .ag-item {
+      display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center;
+      background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--c);
+      border-radius: 14px; padding: 14px;
+    }
+    .ag-time { font-weight: 700; font-size: .92rem; line-height: 1.3; }
+    .ag-time small { display: block; font-weight: 500; color: var(--muted); }
+    .ag-item h4 { font-family: "Fraunces", serif; font-weight: 500; font-size: 1.1rem; margin: 0; line-height: 1.2; }
+    .ag-status { font-size: .85rem; color: var(--muted); }
+    .ag-status.ok { color: var(--ok); font-weight: 700; }
+    .ag-status.low { color: var(--warn); font-weight: 700; }
+    .ag-status.none { color: var(--off); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .ag-item .btn { grid-column: 1 / -1; padding: 9px 16px; font-size: .92rem; }
+    @media (min-width: 560px) {
+      .ag-item { grid-template-columns: 120px 1fr auto; }
+      .ag-item .btn { grid-column: auto; }
+    }
   </style>
 </head>
 <body>
@@ -222,10 +300,27 @@
     <span class="month" id="mes"></span>
   </header>
 
-  <main class="wrap">
-    <div class="filters" id="filtros" role="group" aria-label="Filtrar"></div>
+  <nav class="tabs" role="tablist" aria-label="Vista">
+    <button type="button" role="tab" id="tab-talleres" data-tab="talleres" aria-controls="panel-talleres" aria-selected="true">Talleres</button>
+    <button type="button" role="tab" id="tab-calendario" data-tab="calendario" aria-controls="panel-calendario" aria-selected="false">Calendario</button>
+  </nav>
 
-    <div class="grid" id="grid"><p class="empty">Cargando talleres…</p></div>
+  <main class="wrap">
+    <section id="panel-talleres" role="tabpanel" aria-labelledby="tab-talleres">
+      <div class="filters" id="filtros" role="group" aria-label="Filtrar"></div>
+      <div class="grid" id="grid"><p class="empty">Cargando talleres…</p></div>
+    </section>
+
+    <section id="panel-calendario" role="tabpanel" aria-labelledby="tab-calendario" hidden>
+      <div class="cal-head">
+        <button type="button" class="cal-nav" data-cal="-1" aria-label="Mes anterior">‹</button>
+        <h2 id="cal-titulo"></h2>
+        <button type="button" class="cal-nav" data-cal="1" aria-label="Mes siguiente">›</button>
+      </div>
+      <div class="legend" id="cal-leyenda"></div>
+      <div class="cal" id="cal-grid"></div>
+      <div class="agenda" id="cal-agenda" aria-live="polite"></div>
+    </section>
 
     <section class="how">
       <h3>¿Cómo apartar?</h3>
@@ -250,6 +345,8 @@
       var PLURAL = { Curso: "Cursos", Taller: "Talleres", Experiencia: "Experiencias" };
       var WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>';
       var MAX_PERSONAS_CUPO_ABIERTO = 20;
+      var MESES_CALENDARIO = 6;
+      var COLORES = ["#c4552d", "#5f8a6a", "#c08a1e", "#8a5a83", "#3f7f8c", "#7a5230", "#b5476b", "#4f6aa0"];
 
       var ahora = new Date();
       var hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
@@ -290,9 +387,9 @@
       }
 
       /* ---------- fechas recurrentes ---------- */
-      function generarFechas(a) {
+      function generarFechas(a, limite) {
         var r = a.recurrencia || {};
-        var n = a.fechasAMostrar || 8;
+        var n = limite || a.fechasAMostrar || 8;
         var bloq = {};
         (a.fechasBloqueadas || []).forEach(function (f) { bloq[f] = true; });
         var inicio = r.fechaInicial ? leer(r.fechaInicial) : hoy;
@@ -355,15 +452,22 @@
           .filter(function (s) { return !esHoy || s.inicio > minAhora; });
       }
 
+      function fechaObj(a, k) {
+        var slots = horariosDe(a, k);
+        return { clave: k, slots: slots, lleno: slots.length > 0 && slots.every(function (s) { return s.lleno; }) };
+      }
+
       function prepararActividad(a) {
         var pendiente = !Array.isArray(a.horarios) || tipoCupo(a) === "pendiente";
-        var fechas = generarFechas(a)
-          .map(function (k) {
-            var slots = horariosDe(a, k);
-            return { clave: k, slots: slots, lleno: slots.length > 0 && slots.every(function (s) { return s.lleno; }) };
-          })
-          .filter(function (f) { return pendiente || f.slots.length > 0; });
-        return { a: a, fechas: fechas, pendiente: pendiente, multi: !pendiente && a.horarios.length > 1 };
+        var conHorario = function (f) { return pendiente || f.slots.length > 0; };
+        var fechas = generarFechas(a).map(function (k) { return fechaObj(a, k); }).filter(conHorario);
+        // Para el calendario: todas las fechas de los próximos meses, no solo las que se listan en la tarjeta
+        var fin = clave(new Date(hoy.getFullYear(), hoy.getMonth() + MESES_CALENDARIO, 0));
+        var calendario = generarFechas(a, 200)
+          .filter(function (k) { return k <= fin; })
+          .map(function (k) { return fechaObj(a, k); })
+          .filter(conHorario);
+        return { a: a, fechas: fechas, calendario: calendario, pendiente: pendiente, multi: !pendiente && a.horarios.length > 1 };
       }
 
       function hayLugares(x) {
@@ -688,10 +792,12 @@
 
       /* ---------- render ---------- */
       function preparar() {
+        var n = 0;
         data.actividades.forEach(function (a) {
           if (a.visible === false) return;
           var x = prepararActividad(a);
           if (!x.fechas.length) return;
+          x.color = COLORES[n++ % COLORES.length];
           info[a.id] = x;
           if (!estado[a.id]) {
             var primeraLibre = x.fechas.filter(function (f) { return !f.lleno; })[0] || x.fechas[0];
@@ -762,6 +868,175 @@
           "<span>Los lugares se actualizan conforme se confirman los apartados.</span>";
       }
 
+      /* ---------- calendario ---------- */
+      var DIAS_CAL = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+      var cal = { mes: null, dia: null };
+
+      function eventosPorDia() {
+        var m = {};
+        data.actividades.forEach(function (a) {
+          var x = info[a.id];
+          if (!x) return;
+          x.calendario.forEach(function (f) {
+            (m[f.clave] = m[f.clave] || []).push({ x: x, f: f });
+          });
+        });
+        Object.keys(m).forEach(function (k) {
+          m[k].sort(function (p, q) {
+            return (p.f.slots[0] ? p.f.slots[0].inicio : 9999) - (q.f.slots[0] ? q.f.slots[0].inicio : 9999);
+          });
+        });
+        return m;
+      }
+
+      function rangoMeses() {
+        var claves = [];
+        Object.keys(info).forEach(function (k) { if (info[k].calendario.length) claves.push(info[k].calendario[0].clave); });
+        claves.sort();
+        var ini = claves.length ? leer(claves[0]) : hoy;
+        var desde = new Date(ini.getFullYear(), ini.getMonth(), 1);
+        var hasta = new Date(hoy.getFullYear(), hoy.getMonth() + MESES_CALENDARIO - 1, 1);
+        return { desde: desde, hasta: hasta < desde ? desde : hasta };
+      }
+
+      function primerDiaConEventos(mes, ev) {
+        var d = new Date(mes);
+        for (; d.getMonth() === mes.getMonth(); d = sumarDias(d, 1)) {
+          if (d >= hoy && ev[clave(d)]) return clave(d);
+        }
+        return null;
+      }
+
+      function estadoEvento(e) {
+        var x = e.x, f = e.f, t = tipoCupo(x.a);
+        if (x.pendiente) return { txt: "Horario por confirmar", cls: "" };
+        if (t === "abierto") return { txt: "Cupo abierto", cls: "ok" };
+        if (f.lleno) return { txt: "Agotado", cls: "none" };
+        if (x.multi) {
+          var libres = f.slots.filter(function (s) { return !s.lleno; }).length;
+          return { txt: libres + " de " + f.slots.length + " horarios con lugares", cls: "ok" };
+        }
+        var l = f.slots[0].libres;
+        return { txt: l === 1 ? "¡Queda 1 lugar!" : "Quedan " + l + " lugares", cls: l <= 2 ? "low" : "ok" };
+      }
+
+      function horaEvento(e) {
+        var x = e.x, f = e.f;
+        if (x.pendiente || !f.slots.length) return { corta: "", larga: "Por confirmar", sub: "" };
+        var dur = definido(x.a.duracionMinutos) ? duracionTexto(x.a.duracionMinutos) : "";
+        if (f.slots.length > 1) {
+          return {
+            corta: hora12(f.slots[0].inicio).replace(":00", "") + "–" + hora12(f.slots[f.slots.length - 1].inicio).replace(":00", ""),
+            larga: hora12(f.slots[0].inicio) + " a " + hora12(f.slots[f.slots.length - 1].inicio),
+            sub: "Cada hora" + (dur ? " · " + dur : ""),
+          };
+        }
+        return { corta: hora12(f.slots[0].inicio).replace(":00", ""), larga: hora12(f.slots[0].inicio), sub: dur };
+      }
+
+      function renderCalendario() {
+        var ev = eventosPorDia();
+        var r = rangoMeses();
+        if (!cal.mes) cal.mes = r.desde;
+        if (!cal.dia || leer(cal.dia).getMonth() !== cal.mes.getMonth()) {
+          var hoyEnMes = hoy.getMonth() === cal.mes.getMonth() && hoy.getFullYear() === cal.mes.getFullYear();
+          cal.dia = (hoyEnMes && ev[clave(hoy)] ? clave(hoy) : null) || primerDiaConEventos(cal.mes, ev) || clave(cal.mes);
+        }
+
+        document.getElementById("cal-titulo").textContent = mayus(MESES[cal.mes.getMonth()]) + " " + cal.mes.getFullYear();
+        document.querySelector('[data-cal="-1"]').disabled = cal.mes <= r.desde;
+        document.querySelector('[data-cal="1"]').disabled = cal.mes >= r.hasta;
+
+        document.getElementById("cal-leyenda").innerHTML = data.actividades
+          .map(function (a) { return info[a.id]; })
+          .filter(Boolean)
+          .map(function (x) { return '<span style="--c:' + x.color + '"><i class="dot"></i>' + esc(x.a.nombre) + "</span>"; })
+          .join("");
+
+        var h = DIAS_CAL.map(function (d) { return '<div class="dow">' + d + "</div>"; }).join("");
+        var inicio = sumarDias(cal.mes, -((cal.mes.getDay() + 6) % 7));
+        var finMes = new Date(cal.mes.getFullYear(), cal.mes.getMonth() + 1, 0);
+        var finGrid = sumarDias(finMes, (7 - finMes.getDay()) % 7);
+        for (var d = inicio; d <= finGrid; d = sumarDias(d, 1)) {
+          var k = clave(d);
+          if (d.getMonth() !== cal.mes.getMonth()) { h += '<div class="day out" aria-hidden="true"></div>'; continue; }
+          var pasado = d < hoy;
+          var lista = pasado ? [] : ev[k] || [];
+          var cls = "day" + (pasado ? " past" : "") + (k === clave(hoy) ? " today" : "");
+          var label = mayus(fechaLarga(k)) + (lista.length ? ": " + lista.map(function (e) { return e.x.a.nombre; }).join(", ") : ": sin actividades");
+          h += '<button type="button" class="' + cls + '" data-dia="' + k + '" aria-pressed="' + (k === cal.dia) + '" aria-label="' + esc(label) + '"' + (pasado ? " disabled" : "") + ">" +
+            '<span class="n">' + d.getDate() + "</span>" +
+            '<span class="evs">' + lista.map(function (e) {
+              return '<span class="ev' + (e.f.lleno ? " sold" : "") + '" style="--c:' + e.x.color + '">' + esc(horaEvento(e).corta + " " + e.x.a.nombre) + "</span>";
+            }).join("") + "</span></button>";
+        }
+        document.getElementById("cal-grid").innerHTML = h;
+        renderAgenda(ev);
+      }
+
+      function renderAgenda(ev) {
+        var lista = ev[cal.dia] || [];
+        var h = "<h3>" + mayus(fechaLarga(cal.dia)) + "</h3>";
+        if (!lista.length) h += '<p class="empty" style="padding:12px 0">No hay actividades este día.</p>';
+        h += lista.map(function (e) {
+          var st = estadoEvento(e), hr = horaEvento(e);
+          var texto = e.x.pendiente ? "Ver detalles" : e.f.lleno ? "Ver fechas" : e.x.a.precio === 0 ? "Reservar" : "Apartar";
+          return '<article class="ag-item" style="--c:' + e.x.color + '">' +
+            '<div class="ag-time">' + esc(hr.larga) + (hr.sub ? "<small>" + esc(hr.sub) + "</small>" : "") + "</div>" +
+            '<div><div class="tag">' + esc(e.x.a.tipo) + "</div><h4>" + esc(e.x.a.nombre) + '</h4><div class="ag-status ' + st.cls + '">' + st.txt + "</div></div>" +
+            '<button type="button" class="btn' + (e.f.lleno ? " ghost" : "") + '" data-ir="' + e.x.a.id + '" data-fecha="' + e.f.clave + '">' + texto + "</button>" +
+            "</article>";
+        }).join("");
+        document.getElementById("cal-agenda").innerHTML = h;
+      }
+
+      // Lleva a la tarjeta de la actividad con la fecha del calendario ya elegida
+      function irATarjeta(id, k) {
+        var x = info[id], st = estado[id];
+        if (!x.fechas.some(function (f) { return f.clave === k; })) {
+          x.fechas.push(fechaObj(x.a, k));
+          x.fechas.sort(function (p, q) { return p.clave < q.clave ? -1 : 1; });
+        }
+        st.fecha = k;
+        st.hora = null;
+        st.verFechas = true;
+        filtro = "todos";
+        cambiarVista("talleres");
+        renderFiltros();
+        render();
+        var el = document.querySelector('.card[data-id="' + id + '"]');
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function cambiarVista(v) {
+        document.querySelectorAll(".tabs [data-tab]").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.tab === v)); });
+        document.getElementById("panel-talleres").hidden = v !== "talleres";
+        document.getElementById("panel-calendario").hidden = v !== "calendario";
+        try { history.replaceState(null, "", v === "calendario" ? "#calendario" : location.pathname + location.search); } catch (e) {}
+        if (v === "calendario") renderCalendario();
+      }
+
+      document.querySelector(".tabs").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-tab]");
+        if (b && Object.keys(info).length) cambiarVista(b.dataset.tab);
+      });
+
+      document.getElementById("panel-calendario").addEventListener("click", function (e) {
+        var nav = e.target.closest("[data-cal]");
+        var dia = e.target.closest("[data-dia]");
+        var ir = e.target.closest("[data-ir]");
+        if (nav) {
+          cal.mes = new Date(cal.mes.getFullYear(), cal.mes.getMonth() + +nav.dataset.cal, 1);
+          cal.dia = null;
+          renderCalendario();
+        } else if (dia) {
+          cal.dia = dia.dataset.dia;
+          renderCalendario();
+        } else if (ir) {
+          irATarjeta(ir.dataset.ir, ir.dataset.fecha);
+        }
+      });
+
       /* ---------- eventos ---------- */
       document.getElementById("filtros").addEventListener("click", function (e) {
         var b = e.target.closest("button[data-f]");
@@ -808,6 +1083,7 @@
         renderEncabezado();
         renderFiltros();
         render();
+        if (location.hash === "#calendario") cambiarVista("calendario");
       });
     })();
   </script>

@@ -1,6 +1,9 @@
 # Cómo actualizar la página de DiTutti
 
 Página pública: https://jluisrojo.github.io/mi-proyecto/
+Calendario (link directo): https://jluisrojo.github.io/mi-proyecto/#calendario
+
+El calendario se arma solo con las mismas actividades de la hoja: no hay que actualizarlo por separado.
 
 Hoja de Google (aquí se hace casi todo):
 https://docs.google.com/spreadsheets/d/1zMaG2-Dm_awilaKPbXlIIOCWKvrQwhiPxT6BT1dVgoM/edit
