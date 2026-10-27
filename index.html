@@ -225,7 +225,7 @@
   <main class="wrap">
     <div class="filters" id="filtros" role="group" aria-label="Filtrar"></div>
 
-    <div class="grid" id="grid"></div>
+    <div class="grid" id="grid"><p class="empty">Cargando talleres…</p></div>
 
     <section class="how">
       <h3>¿Cómo apartar?</h3>
@@ -339,7 +339,7 @@
         var minAhora = ahora.getHours() * 60 + ahora.getMinutes();
         return a.horarios
           .map(function (h, idx) {
-            var apartados = typeof ap === "number" ? (idx === 0 ? ap : 0) : (ap && ap[h]) || 0;
+            var apartados = Math.max(0, typeof ap === "number" ? (idx === 0 ? ap : 0) : (ap && ap[h]) || 0);
             var ini = minutos(h);
             var lim = tipoCupo(a) === "limitado";
             var libres = lim ? Math.max(0, a.cupo - apartados) : null;
@@ -539,6 +539,153 @@
           "</article>";
       }
 
+      /* ---------- Google Sheets ---------- */
+      // La hoja tiene dos pestañas: "Actividades" (una fila por taller) y
+      // "Apartados" (una fila por apartado; la página suma los lugares).
+      // Si no se puede leer, se usan los datos de cursos.js como respaldo.
+      var DIAS_CORTOS = { dom: 0, lun: 1, mar: 2, mie: 3, jue: 4, vie: 5, sab: 6 };
+
+      function norm(s) {
+        return String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();
+      }
+      function lista(s, sep) {
+        return String(s || "").split(sep).map(function (x) { return x.trim(); }).filter(Boolean);
+      }
+      function numero(s) {
+        var n = parseFloat(String(s).replace(/[$,\s]/g, ""));
+        return isNaN(n) ? null : n;
+      }
+      function siNo(s) { return /^(si|s|x|true|1)$/.test(norm(s)); }
+      function porConfirmar(s) { var n = norm(s); return n === "" || n === "por_confirmar" || n === "por confirmar"; }
+      function slug(s) { return norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+      function fechaISO(s) {
+        s = String(s || "").trim();
+        var m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (m) return m[1] + "-" + pad(+m[2]) + "-" + pad(+m[3]);
+        m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+        if (m) return (m[3].length === 2 ? "20" + m[3] : m[3]) + "-" + pad(+m[2]) + "-" + pad(+m[1]);
+        return null;
+      }
+      function horaHHMM(s) {
+        var m = norm(s).match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(a|p)?/);
+        if (!m || +m[1] > 23) return null;
+        var h = +m[1];
+        if (m[3] === "p" && h < 12) h += 12;
+        if (m[3] === "a" && h === 12) h = 0;
+        return pad(h) + ":" + (m[2] || "00");
+      }
+      function valorCelda(c) {
+        if (!c || c.v == null) return "";
+        var v = c.v;
+        if (Array.isArray(v)) return pad(v[0]) + ":" + pad(v[1]);
+        if (typeof v === "string") {
+          var m = v.match(/^Date\((\d+),(\d+),(\d+)/);
+          return m ? m[1] + "-" + pad(+m[2] + 1) + "-" + pad(+m[3]) : v.trim();
+        }
+        return String(v);
+      }
+
+      function leerHoja(id, hoja) {
+        return new Promise(function (ok, mal) {
+          var cb = "ditutti_" + slug(hoja).replace(/-/g, "_") + "_" + Date.now();
+          var s = document.createElement("script");
+          var listo = false;
+          var t = setTimeout(function () { fin(); mal(new Error("La hoja tardó demasiado")); }, 8000);
+          function fin() { listo = true; clearTimeout(t); window[cb] = function () {}; s.remove(); }
+          window[cb] = function (r) {
+            fin();
+            if (!r || r.status === "error" || !r.table) return mal(new Error("No se pudo leer la pestaña " + hoja));
+            var cols = r.table.cols.map(function (c) { return norm(c.label).replace(/\s+/g, "_"); });
+            ok(r.table.rows.map(function (row) {
+              var o = {};
+              cols.forEach(function (k, i) { o[k] = valorCelda(row.c[i]); });
+              return o;
+            }));
+          };
+          s.onerror = function () { fin(); mal(new Error("Sin conexión con Google Sheets")); };
+          // Si la hoja no está compartida, Google responde una página de inicio de sesión y nunca llama al callback
+          s.onload = function () { setTimeout(function () { if (!listo) { fin(); mal(new Error("La hoja no está compartida")); } }, 0); };
+          s.src = "https://docs.google.com/spreadsheets/d/" + encodeURIComponent(id) + "/gviz/tq?headers=1&sheet=" + encodeURIComponent(hoja) +
+            "&tqx=" + encodeURIComponent("out:json;responseHandler:" + cb) + "&_=" + Date.now();
+          document.head.appendChild(s);
+        });
+      }
+
+      function actividadDeFila(f) {
+        if (!f.nombre) return null;
+        var rep = norm(f.repeticion);
+        var dias = lista(norm(f.dias_semana), /[,;\s]+/)
+          .map(function (d) { return DIAS_CORTOS[d.slice(0, 3)]; })
+          .filter(function (n) { return n !== undefined; });
+        var r = {};
+        if (fechaISO(f.fecha_inicial)) r.fechaInicial = fechaISO(f.fecha_inicial);
+        if (rep.indexOf("cada") === 0) { r.tipo = "intervalo"; r.intervaloDias = numero(f.cada_cuantos_dias); }
+        else if (rep.indexOf("semanal") === 0) { r.tipo = "semanal"; r.diasSemana = dias; }
+        else if (rep.indexOf("primer") === 0) { r.tipo = "primerDiaDelMes"; r.diaSemana = dias[0]; }
+        else r.tipo = "fechas";
+
+        var horarios = porConfirmar(f.horarios) ? POR : lista(f.horarios, /[,;]+/).map(horaHHMM).filter(Boolean);
+        if (Array.isArray(horarios) && !horarios.length) horarios = POR;
+        var precioN = norm(f.precio) === "gratis" ? 0 : numero(f.precio);
+        var cupoN = numero(f.cupo);
+        var durN = numero(f.duracion_minutos);
+
+        return {
+          id: slug(f.nombre),
+          nombre: f.nombre,
+          tipo: f.tipo ? mayus(norm(f.tipo)) : "Taller",
+          visible: norm(f.mostrar) !== "no",
+          precio: porConfirmar(f.precio) || precioN === null ? POR : precioN,
+          cupo: /^sin/.test(norm(f.cupo)) ? null : cupoN === null ? POR : cupoN,
+          duracionMinutos: durN === null ? POR : durN,
+          horarios: horarios,
+          recurrencia: r,
+          fechasAMostrar: numero(f.fechas_a_mostrar) || 8,
+          fechasBloqueadas: lista(f.fechas_bloqueadas, /[,;\s]+/).map(fechaISO).filter(Boolean),
+          fechasEspeciales: lista(f.fechas_extra, /[,;\s]+/).map(fechaISO).filter(Boolean),
+          descripcion: porConfirmar(f.descripcion) ? POR : lista(f.descripcion, /\n+/),
+          incluye: porConfirmar(f.incluye) ? POR : lista(f.incluye, /\n+|\|/),
+          aviso: f.aviso || "",
+          politicaCancelacion: f.politica_cancelacion || "",
+          nivel: f.nivel || "",
+          mostrarUbicacion: siNo(f.mostrar_ubicacion),
+          estacionamiento: siNo(f.estacionamiento),
+          pedirDiseno: siNo(f.pedir_diseno),
+          apartadosPorFecha: {},
+        };
+      }
+
+      // Suma los lugares de todas las filas con la misma actividad, fecha y horario
+      function aplicarApartados(filas) {
+        var porNombre = {};
+        data.actividades.forEach(function (a) {
+          a.apartadosPorFecha = {};
+          porNombre[norm(a.nombre)] = a;
+          porNombre[norm(a.id)] = a;
+        });
+        filas.forEach(function (f) {
+          var a = porNombre[norm(f.actividad)], k = fechaISO(f.fecha), n = numero(f.lugares);
+          if (!a || !k || n === null || !Array.isArray(a.horarios)) return;
+          var h = f.horario ? horaHHMM(f.horario) : a.horarios[0];
+          if (!h) return;
+          var m = (a.apartadosPorFecha[k] = a.apartadosPorFecha[k] || {});
+          m[h] = (m[h] || 0) + n;
+        });
+      }
+
+      function cargarHoja() {
+        if (!data.hojaGoogle) return Promise.resolve();
+        return Promise.all([leerHoja(data.hojaGoogle, "Actividades"), leerHoja(data.hojaGoogle, "Apartados")])
+          .then(function (res) {
+            var actividades = res[0].map(actividadDeFila).filter(Boolean);
+            if (actividades.length) data.actividades = actividades;
+            aplicarApartados(res[1]);
+          })
+          .catch(function (e) {
+            console.warn("No se pudo leer la hoja de Google; se usan los datos de cursos.js.", e);
+          });
+      }
+
       /* ---------- render ---------- */
       function preparar() {
         data.actividades.forEach(function (a) {
@@ -656,10 +803,12 @@
         if (e.target.tagName === "DETAILS" && estado[e.target.dataset.id]) estado[e.target.dataset.id].detalles = e.target.open;
       }, true);
 
-      preparar();
-      renderEncabezado();
-      renderFiltros();
-      render();
+      cargarHoja().then(function () {
+        preparar();
+        renderEncabezado();
+        renderFiltros();
+        render();
+      });
     })();
   </script>
 </body>

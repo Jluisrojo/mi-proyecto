@@ -4,15 +4,9 @@ Página (optimizada para celular) con los talleres y experiencias de DiTutti Con
 
 ## Cómo actualizarla
 
-Todo se edita en **`cursos.js`** (las instrucciones están al inicio del archivo):
+Los apartados y las actividades se editan en la **hoja de Google Sheets** (pestañas *Apartados* y *Actividades*), sin tocar código. `cursos.js` guarda el WhatsApp, la ubicación, el enlace a la hoja y un respaldo de los datos.
 
-- **Fechas automáticas**: cada actividad tiene una `recurrencia` (cada 14 días, días de la semana o primer miércoles del mes). Las fechas pasadas se ocultan solas y la tarjeta pasa a la siguiente fecha.
-- **Apartados**: se anotan por fecha (y por horario si hay varios) en `apartadosPorFecha`:
-  - `{ "2026-11-14": 8 }` → Punch Needle del 14 de nov con 8 apartados.
-  - `{ "2026-11-23": { "11:00": 3, "12:00": 7 } }` → Pinta tu Tote Bag por horario.
-  Cuando se llena una fecha u horario, se muestra **AGOTADO** solo ahí y el botón cambia a "Avísame si se libera".
-- **Fechas sin actividad**: agrégalas a `fechasBloqueadas`. **Fechas extra**: en `fechasEspeciales`.
-- **Datos pendientes**: lo que diga `"POR_CONFIRMAR"` no se muestra en la página.
+Guía completa, incluyendo cómo hacer cambios con ChatGPT u otra IA: **[COMO_ACTUALIZAR.md](COMO_ACTUALIZAR.md)**.
 
 ## Publicarla
 

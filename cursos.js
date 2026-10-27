@@ -2,7 +2,10 @@
   ============================================================
   DITUTTI · Talleres y experiencias
   ============================================================
-  Este es el ÚNICO archivo que necesitas editar.
+  ▸ Lo normal es editar la HOJA DE GOOGLE (ver "hojaGoogle" abajo):
+    ahí se agregan actividades y se anotan los apartados.
+    Este archivo es el RESPALDO por si la hoja no se puede leer, y
+    guarda el número de WhatsApp y la ubicación.
 
   ▸ Las fechas se generan solas a partir de la "recurrencia" de cada
     actividad. Las fechas pasadas se ocultan automáticamente.
@@ -39,6 +42,11 @@
 */
 
 window.DITUTTI = {
+  // Hoja de Google Sheets de donde la página lee las actividades y los
+  // apartados. Si la hoja no se puede leer, se usan los datos de abajo
+  // como respaldo. Para dejar de usar la hoja, pon: hojaGoogle: ""
+  hojaGoogle: "1zMaG2-Dm_awilaKPbXlIIOCWKvrQwhiPxT6BT1dVgoM",
+
   // WhatsApp de DiTutti (55 5941 6472) con código de país, sin espacios
   whatsapp: "525559416472",
   whatsappVisible: "55 5941 6472",
