@@ -380,6 +380,10 @@
       function duracionTexto(min) {
         if (!definido(min)) return "";
         if (min % 60 === 0) return min / 60 + (min === 60 ? " hora" : " horas");
+        if (min > 60) {
+          var h = Math.floor(min / 60);
+          return h + (h === 1 ? " hora " : " horas ") + (min % 60) + " minutos";
+        }
         return min + " minutos";
       }
       function waLink(texto) {
@@ -415,6 +419,9 @@
             d = sumarDias(primero, (r.diaSemana - primero.getDay() + 7) % 7);
             if (d >= desde && !bloq[clave(d)]) out.push(clave(d));
           }
+        } else if (r.fechaInicial && inicio >= hoy && !bloq[r.fechaInicial]) {
+          // Sin repetición válida (p. ej. "cada_n_dias" sin número de días): solo la fecha inicial
+          out.push(r.fechaInicial);
         }
 
         (a.fechasEspeciales || []).forEach(function (f) {
@@ -430,11 +437,12 @@
       }
 
       function horariosDe(a, k) {
-        if (!Array.isArray(a.horarios)) return [];
+        var horas = (a.horariosPorFecha && a.horariosPorFecha[k]) || a.horarios;
+        if (!Array.isArray(horas)) return [];
         var ap = (a.apartadosPorFecha || {})[k];
         var esHoy = k === clave(hoy);
         var minAhora = ahora.getHours() * 60 + ahora.getMinutes();
-        return a.horarios
+        return horas
           .map(function (h, idx) {
             var apartados = Math.max(0, typeof ap === "number" ? (idx === 0 ? ap : 0) : (ap && ap[h]) || 0);
             var ini = minutos(h);
@@ -514,6 +522,24 @@
       }
 
       /* ---------- tarjeta ---------- */
+      // Describe varios horarios: "inicio cada hora" si son seguidos, o la lista si no
+      function textoHorarios(slots) {
+        var inis = slots.map(function (s) { return s.inicio; });
+        var cadaHora = inis.length > 2 && inis.every(function (m, i) { return i === 0 || m - inis[i - 1] === 60; });
+        var corto = function (m) { return hora12(m).replace(":00", ""); };
+        if (cadaHora) {
+          return {
+            cadaHora: true,
+            corta: corto(inis[0]) + "–" + corto(inis[inis.length - 1]),
+            lista: hora12(inis[0]) + " a " + hora12(inis[inis.length - 1]),
+            larga: "Inicio cada hora, de " + hora12(inis[0]) + " a " + hora12(inis[inis.length - 1]),
+          };
+        }
+        var todos = inis.map(hora12);
+        var unidos = todos.length > 1 ? todos.slice(0, -1).join(", ") + " y " + todos[todos.length - 1] : todos[0];
+        return { cadaHora: false, corta: inis.map(corto).join(" / "), lista: unidos, larga: "Horarios: " + unidos };
+      }
+
       function chipFecha(x, f, sel) {
         var d = leer(f.clave);
         var nota = "";
@@ -594,7 +620,7 @@
         var horario;
         if (x.pendiente) horario = "Horario por confirmar";
         else if (s) horario = s.texto;
-        else horario = "Inicio cada hora, de " + hora12(f.slots[0].inicio) + " a " + hora12(f.slots[f.slots.length - 1].inicio);
+        else horario = textoHorarios(f.slots).larga;
         if (definido(a.duracionMinutos) && !x.pendiente) horario += " · " + duracionTexto(a.duracionMinutos);
 
         var meta = '<li class="when"><small>' + (esPrimera ? "Próxima fecha" : "Fecha elegida") + "</small>🗓 " + mayus(fechaLarga(f.clave)) + "</li>" +
@@ -770,18 +796,52 @@
         filas.forEach(function (f) {
           var a = porNombre[norm(f.actividad)], k = fechaISO(f.fecha), n = numero(f.lugares);
           if (!a || !k || n === null || !Array.isArray(a.horarios)) return;
-          var h = f.horario ? horaHHMM(f.horario) : a.horarios[0];
+          var horas = (a.horariosPorFecha && a.horariosPorFecha[k]) || a.horarios;
+          var h = f.horario ? horaHHMM(f.horario) : horas[0];
           if (!h) return;
           var m = (a.apartadosPorFecha[k] = a.apartadosPorFecha[k] || {});
           m[h] = (m[h] || 0) + n;
         });
       }
 
+      // Varias filas con el mismo nombre = una sola actividad con las fechas y
+      // horarios de cada fila (ej. un taller el viernes 20 a las 15:00 y el
+      // viernes 27 a las 11:00 y 15:00).
+      function unirRepetidas(lista) {
+        var porId = {}, out = [];
+        lista.forEach(function (a) {
+          if (porId[a.id]) porId[a.id].push(a);
+          else { porId[a.id] = [a]; out.push(a); }
+        });
+        out.forEach(function (base) {
+          var filas = porId[base.id];
+          if (filas.length < 2) return;
+          var porFecha = {}, todas = [];
+          filas.forEach(function (r) {
+            if (!Array.isArray(r.horarios)) return;
+            generarFechas(r, 200).forEach(function (k) {
+              porFecha[k] = porFecha[k] || [];
+              r.horarios.forEach(function (h) { if (porFecha[k].indexOf(h) === -1) porFecha[k].push(h); });
+              porFecha[k].sort();
+            });
+            r.horarios.forEach(function (h) { if (todas.indexOf(h) === -1) todas.push(h); });
+            base.fechasAMostrar = Math.max(base.fechasAMostrar, r.fechasAMostrar);
+          });
+          if (!todas.length) return;
+          base.horarios = todas.sort();
+          base.horariosPorFecha = porFecha;
+          base.recurrencia = { tipo: "fechas" };
+          base.fechasEspeciales = Object.keys(porFecha);
+          base.fechasBloqueadas = [];
+        });
+        return out;
+      }
+
       function cargarHoja() {
         if (!data.hojaGoogle) return Promise.resolve();
         return Promise.all([leerHoja(data.hojaGoogle, "Actividades"), leerHoja(data.hojaGoogle, "Apartados")])
           .then(function (res) {
-            var actividades = res[0].map(actividadDeFila).filter(Boolean);
+            var actividades = unirRepetidas(res[0].map(actividadDeFila).filter(Boolean));
             if (actividades.length) data.actividades = actividades;
             aplicarApartados(res[1]);
           })
@@ -925,11 +985,8 @@
         if (x.pendiente || !f.slots.length) return { corta: "", larga: "Por confirmar", sub: "" };
         var dur = definido(x.a.duracionMinutos) ? duracionTexto(x.a.duracionMinutos) : "";
         if (f.slots.length > 1) {
-          return {
-            corta: hora12(f.slots[0].inicio).replace(":00", "") + "–" + hora12(f.slots[f.slots.length - 1].inicio).replace(":00", ""),
-            larga: hora12(f.slots[0].inicio) + " a " + hora12(f.slots[f.slots.length - 1].inicio),
-            sub: "Cada hora" + (dur ? " · " + dur : ""),
-          };
+          var t = textoHorarios(f.slots);
+          return { corta: t.corta, larga: t.lista, sub: (t.cadaHora ? "Cada hora" : "") + (t.cadaHora && dur ? " · " : "") + dur };
         }
         return { corta: hora12(f.slots[0].inicio).replace(":00", ""), larga: hora12(f.slots[0].inicio), sub: dur };
       }

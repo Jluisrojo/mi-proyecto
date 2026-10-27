@@ -27,6 +27,7 @@ También desde la hoja, pestaña **Actividades**: llena una fila nueva. La pesta
 - Curso de un solo día: `repeticion` = `fechas` y pon la fecha en `fechas_extra`.
 - Curso con varias fechas sueltas: `repeticion` = `fechas` y en `fechas_extra` todas separadas por coma.
 - Algo que se repite: `cada_n_dias`, `semanal` o `primer_dia_del_mes`.
+- Mismo taller con horarios distintos según el día: una fila por fecha con **exactamente el mismo nombre**; en la página se juntan en una sola tarjeta.
 - Para ocultarlo sin borrarlo: `mostrar` = `NO`.
 - Si aún no tienes un dato, escribe `POR_CONFIRMAR`: no se muestra en la página.
 
