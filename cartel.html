@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiTutti · Cartel tarjeta de lealtad</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="logo-ditutti.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    @page { size: letter; margin: 0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #e9e1d5; font-family: "DM Sans", system-ui, sans-serif; color: #2b211b; }
+    .hoja {
+      width: 8.5in; min-height: 11in; margin: 24px auto; background: #f7f1e8;
+      padding: .7in .8in; display: flex; flex-direction: column; align-items: center; text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+    .hoja img.logo { width: 1.7in; height: 1.7in; }
+    h1 { font-family: "Fraunces", Georgia, serif; font-size: 52pt; line-height: 1; margin: .25in 0 .1in; letter-spacing: -.01em; }
+    h1 span { color: #c4552d; }
+    .lead { font-size: 20pt; margin: 0 0 .3in; max-width: 6in; }
+    .lead strong { color: #5b3a24; }
+    .premios { display: flex; gap: .45in; justify-content: center; margin-bottom: .35in; }
+    .premios div { display: grid; justify-items: center; gap: 6px; font-size: 14pt; font-weight: 700; }
+    .premios span { width: .95in; height: .95in; border-radius: 50%; background: #5b3a24; display: grid; place-items: center; }
+    .premios svg { width: .5in; height: .5in; fill: none; stroke: #fdf6ec; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .qr { width: 3.1in; height: 3.1in; background: #fff; padding: .18in; border-radius: .2in; border: 3px solid #5b3a24; }
+    .qr svg { width: 100%; height: 100%; display: block; shape-rendering: crispEdges; }
+    .pasos { font-size: 15pt; margin: .3in 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+    .pasos b { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #5b3a24; color: #fdf6ec; font-size: 12pt; margin-right: 8px; }
+    .url { margin-top: auto; padding-top: .25in; font-size: 11pt; color: #6f6157; }
+    .imprimir { position: fixed; right: 16px; bottom: 16px; font: inherit; font-weight: 700; font-size: 16px; padding: 14px 22px; border-radius: 999px; border: 0; background: #2b211b; color: #fff; cursor: pointer; }
+    @media print {
+      body { background: #f7f1e8; }
+      .hoja { margin: 0; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .imprimir { display: none; }
+    }
+    @media screen and (max-width: 8.6in) { .hoja { zoom: .45; margin: 8px auto; } }
+  </style>
+</head>
+<body>
+  <main class="hoja">
+    <img class="logo" src="logo-ditutti.png" alt="DiTutti Concept Store">
+    <h1>Tarjeta de lealtad<span>.</span></h1>
+    <p class="lead">Por cada <strong>5 compras</strong> te regalamos<br>un café, un smoothie o unos mini hotcakes.</p>
+    <div class="premios">
+      <div><span><svg viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c-.6.8-.6 1.7 0 2.5M12 3c-.6.8-.6 1.7 0 2.5"/></svg></span>Café</div>
+      <div><span><svg viewBox="0 0 24 24"><path d="M6 8h12l-1.6 12.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8z"/><path d="M5 8a7 4 0 0 1 14 0"/><path d="M13 8l2-6 2.5.5"/></svg></span>Smoothie</div>
+      <div><span><svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="8" ry="2.5"/><path d="M4 9v2.5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V9"/><path d="M4 12v2.5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V12"/><path d="M3 19h18"/><path d="M11 6.5c0 1 .8 1.5 1.5 1.5"/></svg></span>Mini hotcakes</div>
+    </div>
+    <div class="qr" id="qr"></div>
+    <ol class="pasos">
+      <li><b>1</b>Escanea con la cámara de tu celular</li>
+      <li><b>2</b>Toca «Crear mi tarjeta gratis» y guárdala</li>
+      <li><b>3</b>Muéstrala en cada compra</li>
+    </ol>
+    <div class="url" id="url"></div>
+  </main>
+  <button class="imprimir" type="button" onclick="window.print()">Imprimir</button>
+
+  <script src="qrcode.js"></script>
+  <script>
+    var destino = new URL("lealtad.html", location.href).href;
+    var q = qrcode(0, "M");
+    q.addData(destino);
+    q.make();
+    document.getElementById("qr").innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    document.getElementById("url").textContent = destino.replace(/^https?:\/\//, "");
+  </script>
+</body>
+</html>

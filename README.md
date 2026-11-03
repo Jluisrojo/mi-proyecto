@@ -4,7 +4,7 @@ Página (optimizada para celular) con los talleres y experiencias de DiTutti Con
 
 ## Tarjeta de lealtad
 
-`lealtad.html`: tarjeta digital gratuita (QR + 5 sellos). Cada 5 compras, un café, smoothie o mini hotcakes gratis. Los sellos se anotan en la pestaña *Lealtad* de la hoja.
+`lealtad.html`: tarjeta digital gratuita (QR + 5 sellos). Cada 5 compras, un café, smoothie o mini hotcakes gratis. El equipo escanea el QR del cliente en `equipo.html` y el sello se anota en la pestaña *Lealtad* de la hoja (vía `apps-script/Codigo.gs`). `cartel.html` es el cartel para el mostrador.
 
 ## Cómo actualizarla
 

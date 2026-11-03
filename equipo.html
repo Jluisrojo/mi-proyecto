@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DiTutti · Equipo</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#2b211b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DiTutti Caja">
+  <link rel="icon" href="logo-ditutti.png">
+  <link rel="apple-touch-icon" href="logo-ditutti.png">
+  <style>
+    :root {
+      --bg: #f7f1e8; --surface: #fffaf3; --ink: #2b211b; --muted: #6f6157; --line: #e6d9c8;
+      --brand: #5b3a24; --brand-ink: #fdf6ec; --ok: #2f7a47; --bad: #b3401c; --wa: #1f9d55;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #1c1714; --surface: #262019; --ink: #f3ebe1; --muted: #b5a698; --line: #3a3128; --brand: #4a2f1d; --ok: #4fae6c; --bad: #e0774f; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 18px; line-height: 1.45; -webkit-tap-highlight-color: transparent; }
+    .wrap { max-width: 480px; margin: 0 auto; padding: 16px 16px 40px; }
+    [hidden] { display: none !important; }
+    h1 { font-size: 1.2rem; margin: 0; }
+    .top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .top img { width: 40px; height: 40px; border-radius: 50%; background: #f7f1e8; }
+    .top .sp { flex: 1; }
+    .link { background: none; border: 0; color: var(--muted); font: inherit; font-size: .9rem; text-decoration: underline; cursor: pointer; padding: 8px; }
+
+    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; padding: 14px 18px; border-radius: 16px; border: 0; font: inherit; font-weight: 700; font-size: 1.15rem; cursor: pointer; background: var(--ink); color: var(--bg); text-decoration: none; }
+    .btn.sello { background: var(--brand); color: var(--brand-ink); min-height: 76px; font-size: 1.35rem; }
+    .btn.premio { background: var(--ok); color: #fff; }
+    .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .stack { display: grid; gap: 12px; }
+
+    label { display: block; font-weight: 700; margin: 0 0 6px; }
+    input { width: 100%; font: inherit; font-size: 1.1rem; padding: 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+    .nota { color: var(--muted); font-size: .95rem; margin: 6px 0 0; }
+    .error { color: var(--bad); font-weight: 700; margin: 8px 0 0; }
+
+    /* Escáner */
+    .camara { position: relative; aspect-ratio: 1; background: #000; border-radius: 22px; overflow: hidden; }
+    .camara video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .camara .marco { position: absolute; inset: 16%; border: 4px solid rgba(255,255,255,.9); border-radius: 18px; box-shadow: 0 0 0 999px rgba(0,0,0,.35); }
+    .camara .msg { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: #fff; padding: 24px; }
+    .ayuda { text-align: center; color: var(--muted); margin: 10px 0 18px; }
+    form.manual { display: flex; gap: 8px; }
+    form.manual input { flex: 1; min-width: 0; }
+    form.manual .btn { width: auto; min-height: 0; }
+
+    /* Tarjeta del cliente */
+    .cliente { background: var(--brand); color: var(--brand-ink); border-radius: 22px; padding: 18px; margin-bottom: 16px; }
+    .cliente .num { font-size: .95rem; opacity: .85; letter-spacing: .05em; }
+    .cliente .nom { font-size: 1.5rem; font-weight: 800; line-height: 1.15; margin: 2px 0 12px; }
+    .puntos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 6px 0 12px; }
+    .puntos span { aspect-ratio: 1; border-radius: 50%; border: 2px dashed rgba(253,246,236,.5); }
+    .puntos span.on { background: #f7f1e8 url(logo-ditutti.png) center/90% no-repeat; border: 0; }
+    .cliente .linea { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; }
+    .premio-aviso { background: #f7f1e8; color: #2b211b; border-radius: 14px; padding: 12px; text-align: center; font-weight: 800; margin-top: 12px; }
+
+    .cantidad { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 4px 0 2px; }
+    .cantidad button { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); color: var(--ink); font-size: 1.6rem; font-weight: 700; cursor: pointer; }
+    .cantidad output { font-size: 1.3rem; font-weight: 800; min-width: 7ch; text-align: center; }
+
+    details.registro { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+    details.registro summary { font-weight: 700; cursor: pointer; }
+    details.registro .stack { margin-top: 12px; }
+
+    /* Confirmación */
+    .hecho { text-align: center; padding: 18px 0 8px; }
+    .hecho .check { width: 110px; height: 110px; border-radius: 50%; background: var(--ok); color: #fff; display: grid; place-items: center; margin: 0 auto 14px; font-size: 64px; line-height: 1; }
+    .hecho h2 { font-size: 1.7rem; margin: 0 0 6px; }
+    .hecho p { margin: 0 0 18px; color: var(--muted); font-size: 1.1rem; }
+    .cargando { opacity: .6; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="top">
+      <img src="logo-ditutti.png" alt="">
+      <h1>Tarjetas de lealtad</h1>
+      <span class="sp"></span>
+      <button class="link" id="ir-config" type="button" hidden>Ajustes</button>
+    </div>
+
+    <!-- 1. Configuración (una sola vez por celular) -->
+    <section id="v-config" hidden>
+      <div class="stack">
+        <p style="margin:0">Configura este celular <strong>una sola vez</strong>.</p>
+        <div>
+          <label for="cfg-url">Enlace del script</label>
+          <input id="cfg-url" type="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+          <p class="nota">Viene en la guía (COMO_ACTUALIZAR.md). Si ya está guardado, déjalo así.</p>
+        </div>
+        <div>
+          <label for="cfg-pin">PIN</label>
+          <input id="cfg-pin" type="password" inputmode="text" autocomplete="off">
+        </div>
+        <button class="btn" id="cfg-guardar" type="button">Guardar y empezar</button>
+        <p class="error" id="cfg-error" hidden></p>
+        <button class="btn ghost" id="cfg-compartir" type="button" hidden>Enviar esta configuración a otro celular por WhatsApp</button>
+      </div>
+    </section>
+
+    <!-- 2. Escanear -->
+    <section id="v-escanear" hidden>
+      <div class="camara">
+        <video id="video" playsinline muted></video>
+        <div class="marco"></div>
+        <div class="msg" id="cam-msg">Abriendo cámara…</div>
+      </div>
+      <p class="ayuda">Apunta al QR de la tarjeta del cliente</p>
+      <form class="manual" id="manual">
+        <input id="manual-num" inputmode="numeric" autocomplete="off" placeholder="o escribe el número" aria-label="Número de tarjeta">
+        <button class="btn" type="submit">Buscar</button>
+      </form>
+      <p class="error" id="esc-error" hidden></p>
+    </section>
+
+    <!-- 3. Tarjeta del cliente -->
+    <section id="v-tarjeta" hidden>
+      <div class="cliente">
+        <div class="num" id="t-num"></div>
+        <div class="nom" id="t-nom"></div>
+        <div class="puntos" id="t-puntos"></div>
+        <div class="linea"><span id="t-faltan"></span><span id="t-total"></span></div>
+        <div class="premio-aviso" id="t-premio" hidden></div>
+      </div>
+      <div class="stack">
+        <div class="cantidad" aria-label="Cuántos sellos">
+          <button type="button" id="menos" aria-label="Menos">−</button>
+          <output id="cant">1 sello</output>
+          <button type="button" id="mas" aria-label="Más">+</button>
+        </div>
+        <button class="btn sello" id="b-sello" type="button">＋ Sumar sello</button>
+        <button class="btn premio" id="b-canje" type="button">🎁 Canjear premio</button>
+        <p class="error" id="t-error" hidden></p>
+        <details class="registro" id="registro">
+          <summary id="reg-titulo">Anotar nombre del cliente (opcional)</summary>
+          <div class="stack">
+            <div><label for="reg-nombre">Nombre</label><input id="reg-nombre" autocomplete="off"></div>
+            <div><label for="reg-tel">Teléfono</label><input id="reg-tel" inputmode="tel" autocomplete="off"></div>
+            <p class="nota" style="margin:0">Se guarda en la hoja privada de clientes, no en la pública.</p>
+            <button class="btn ghost" id="reg-guardar" type="button">Guardar nombre</button>
+          </div>
+        </details>
+        <button class="btn ghost" id="b-otro" type="button">Escanear otra tarjeta</button>
+      </div>
+    </section>
+
+    <!-- 4. Listo -->
+    <section id="v-hecho" hidden>
+      <div class="hecho">
+        <div class="check" aria-hidden="true">✓</div>
+        <h2 id="h-titulo"></h2>
+        <p id="h-detalle"></p>
+      </div>
+      <div class="stack">
+        <button class="btn sello" id="h-siguiente" type="button">Escanear siguiente cliente</button>
+        <button class="btn ghost" id="h-volver" type="button">Volver a la tarjeta</button>
+        <button class="btn ghost" id="h-deshacer" type="button">↩︎ Deshacer (me equivoqué)</button>
+        <p class="error" id="h-error" hidden></p>
+      </div>
+    </section>
+  </div>
+
+  <script src="jsqr.js"></script>
+  <script src="cursos.js"></script>
+  <script>
+    (function () {
+      var data = window.DITUTTI || {};
+      var lealtad = data.lealtad || {};
+      var premios = lealtad.premios || ["un café", "un smoothie", "unos mini hotcakes"];
+      var K_URL = "ditutti_equipo_url", K_PIN = "ditutti_equipo_pin";
+      var $ = function (id) { return document.getElementById(id); };
+
+      function leer(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+      function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+      function digitos(s) { return String(s == null ? "" : s).replace(/\D/g, ""); }
+      function valido(d) { return /^[1-9]\d{9}$/.test(d); }
+      function formato(d) { return d.slice(0, 3) + "-" + d.slice(3, 6) + "-" + d.slice(6); }
+      function plural(n, a, b) { return n + " " + (n === 1 ? a : b); }
+      function vibrar(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} }
+
+      // Configuración que llega por enlace: equipo.html#url=…&pin=…
+      (function () {
+        var h = new URLSearchParams(location.hash.slice(1));
+        if (h.get("url")) guardar(K_URL, h.get("url"));
+        if (h.get("pin")) guardar(K_PIN, h.get("pin"));
+        if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+      })();
+      function urlScript() { return leer(K_URL) || lealtad.scriptUrl || ""; }
+
+      /* ---------- Vistas ---------- */
+      var VISTAS = ["config", "escanear", "tarjeta", "hecho"];
+      function ver(v) {
+        VISTAS.forEach(function (x) { $("v-" + x).hidden = x !== v; });
+        $("ir-config").hidden = v === "config";
+        if (v === "escanear") iniciarCamara(); else detenerCamara();
+        window.scrollTo(0, 0);
+      }
+
+      /* ---------- Llamadas al script ---------- */
+      function llamar(params) {
+        var q = new URLSearchParams(params);
+        q.set("pin", leer(K_PIN));
+        q.set("_", Date.now());
+        document.body.classList.add("cargando");
+        return fetch(urlScript() + "?" + q.toString(), { redirect: "follow" })
+          .then(function (r) { return r.json(); })
+          .catch(function () { throw new Error("Sin conexión con Google. Revisa el internet e intenta de nuevo."); })
+          .then(function (r) {
+            if (!r.ok && r.error === "pin") { ver("config"); throw new Error("El PIN no es correcto."); }
+            return r;
+          })
+          .finally(function () { document.body.classList.remove("cargando"); });
+      }
+      function mostrarError(id, msg) { $(id).textContent = msg; $(id).hidden = !msg; }
+
+      /* ---------- Configuración ---------- */
+      function abrirConfig() {
+        $("cfg-url").value = urlScript();
+        $("cfg-pin").value = leer(K_PIN);
+        $("cfg-compartir").hidden = !(urlScript() && leer(K_PIN));
+        ver("config");
+      }
+      $("ir-config").addEventListener("click", abrirConfig);
+      $("cfg-guardar").addEventListener("click", function () {
+        var u = $("cfg-url").value.trim(), p = $("cfg-pin").value.trim();
+        if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(u)) return mostrarError("cfg-error", "El enlace debe empezar con https://script.google.com/");
+        if (!p) return mostrarError("cfg-error", "Escribe el PIN.");
+        guardar(K_URL, u); guardar(K_PIN, p);
+        mostrarError("cfg-error", "");
+        llamar({ accion: "ping" }).then(function (r) {
+          if (!r.ok) return mostrarError("cfg-error", r.error || "No se pudo conectar.");
+          ver("escanear");
+        }).catch(function (e) { mostrarError("cfg-error", e.message); });
+      });
+      $("cfg-compartir").addEventListener("click", function () {
+        var link = location.origin + location.pathname + "#url=" + encodeURIComponent(urlScript()) + "&pin=" + encodeURIComponent(leer(K_PIN));
+        window.open("https://wa.me/?text=" + encodeURIComponent("Abre este enlace en tu celular para registrar sellos de DiTutti (no lo compartas con clientes): " + link), "_blank");
+      });
+
+      /* ---------- Cámara + lector de QR ---------- */
+      var stream = null, buscando = false, lienzo = document.createElement("canvas"), ctx = lienzo.getContext("2d", { willReadFrequently: true });
+      function iniciarCamara() {
+        mostrarError("esc-error", "");
+        $("cam-msg").hidden = false;
+        $("cam-msg").textContent = "Abriendo cámara…";
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          $("cam-msg").textContent = "Este navegador no permite usar la cámara. Escribe el número abajo.";
+          return;
+        }
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }).then(function (s) {
+          if ($("v-escanear").hidden) { s.getTracks().forEach(function (t) { t.stop(); }); return; }
+          stream = s;
+          var v = $("video");
+          v.srcObject = s;
+          v.play();
+          $("cam-msg").hidden = true;
+          buscando = true;
+          setTimeout(escanear, 300);
+        }).catch(function () {
+          $("cam-msg").textContent = "No se pudo abrir la cámara. Da permiso de cámara a esta página, o escribe el número abajo.";
+        });
+      }
+      function detenerCamara() {
+        buscando = false;
+        if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+      }
+      function escanear() {
+        if (!buscando) return;
+        var v = $("video");
+        if (v.readyState >= 2 && v.videoWidth) {
+          var lado = Math.min(v.videoWidth, v.videoHeight, 720);
+          var sx = (v.videoWidth - lado) / 2, sy = (v.videoHeight - lado) / 2;
+          lienzo.width = lienzo.height = lado;
+          ctx.drawImage(v, sx, sy, lado, lado, 0, 0, lado, lado);
+          var img = ctx.getImageData(0, 0, lado, lado);
+          var r = window.jsQR && jsQR(img.data, lado, lado, { inversionAttempts: "dontInvert" });
+          if (r && r.data) {
+            var d = tarjetaDeTexto(r.data);
+            if (valido(d)) { vibrar(80); buscando = false; abrirTarjeta(d); return; }
+            mostrarError("esc-error", "Ese QR no es una tarjeta DiTutti.");
+          }
+        }
+        setTimeout(escanear, 160);
+      }
+      function tarjetaDeTexto(t) {
+        var m = String(t).match(/[?&]t=([\d-]+)/);
+        return digitos(m ? m[1] : t);
+      }
+      $("manual").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var d = digitos($("manual-num").value);
+        if (!valido(d)) return mostrarError("esc-error", "El número tiene 10 dígitos, por ejemplo 480-518-6627.");
+        $("manual-num").value = "";
+        abrirTarjeta(d);
+      });
+
+      /* ---------- Tarjeta ---------- */
+      var actual = null, info = null, cantidad = 1;
+      function pintarCantidad() { $("cant").textContent = plural(cantidad, "sello", "sellos"); $("b-sello").textContent = "＋ Sumar " + plural(cantidad, "sello", "sellos"); }
+      $("menos").addEventListener("click", function () { cantidad = Math.max(1, cantidad - 1); pintarCantidad(); });
+      $("mas").addEventListener("click", function () { cantidad = Math.min(10, cantidad + 1); pintarCantidad(); });
+
+      function pintarTarjeta(r) {
+        info = r;
+        $("t-num").textContent = "Tarjeta " + r.tarjeta;
+        $("t-nom").textContent = r.nombre || (r.sellos ? "Cliente" : "Tarjeta nueva");
+        var html = "";
+        for (var i = 0; i < r.meta; i++) html += '<span class="' + (i < r.enTarjeta ? "on" : "") + '"></span>';
+        $("t-puntos").innerHTML = html;
+        $("t-faltan").textContent = "Le faltan " + plural(r.meta - r.enTarjeta, "sello", "sellos");
+        $("t-total").textContent = plural(r.sellos, "compra", "compras");
+        $("t-premio").hidden = r.disponibles < 1;
+        $("t-premio").textContent = "🎉 Tiene " + plural(r.disponibles, "premio", "premios") + " para canjear";
+        $("b-canje").disabled = r.disponibles < 1;
+        $("b-canje").textContent = r.disponibles > 0 ? "🎁 Canjear premio (" + premios.join(" / ").replace(/\b(un|unos)\s/g, "") + ")" : "🎁 Sin premios por ahora";
+        $("reg-titulo").textContent = r.nombre ? "Cambiar nombre o teléfono" : "Anotar nombre del cliente (opcional)";
+        $("reg-nombre").value = r.nombre || "";
+        $("reg-tel").value = r.telefono || "";
+        $("registro").open = false;
+      }
+
+      function abrirTarjeta(d) {
+        actual = d; cantidad = 1; pintarCantidad();
+        mostrarError("t-error", "");
+        pintarTarjeta({ tarjeta: formato(d), nombre: "Buscando…", sellos: 0, enTarjeta: 0, meta: lealtad.sellosPorPremio || 5, disponibles: 0 });
+        ver("tarjeta");
+        llamar({ accion: "consulta", tarjeta: d }).then(function (r) {
+          if (!r.ok) throw new Error(r.error);
+          pintarTarjeta(r);
+        }).catch(function (e) { mostrarError("t-error", e.message); $("t-nom").textContent = "—"; });
+      }
+
+      function accion(tipo, extra) {
+        mostrarError("t-error", "");
+        mostrarError("h-error", "");
+        var p = Object.assign({ accion: tipo, tarjeta: actual }, extra || {});
+        return llamar(p).then(function (r) {
+          if (r.tarjeta) pintarTarjeta(r);
+          if (!r.ok) throw new Error(r.error);
+          vibrar([60, 40, 60]);
+          return r;
+        });
+      }
+      function confirmar(r) {
+        $("h-titulo").textContent = r.hecho;
+        var quien = r.nombre ? r.nombre + " · " : "";
+        $("h-detalle").textContent = r.disponibles > 0
+          ? quien + "¡Ya tiene " + plural(r.disponibles, "premio", "premios") + " para canjear!"
+          : quien + "Lleva " + r.enTarjeta + " de " + r.meta + ". Le faltan " + plural(r.meta - r.enTarjeta, "sello", "sellos") + ".";
+        $("h-deshacer").hidden = false;
+        ver("hecho");
+      }
+      $("b-sello").addEventListener("click", function () {
+        accion("sello", { cantidad: cantidad }).then(confirmar).catch(function (e) { mostrarError("t-error", e.message); });
+      });
+      $("b-canje").addEventListener("click", function () {
+        if (!confirm("¿Entregar 1 premio a esta tarjeta?")) return;
+        accion("canje").then(confirmar).catch(function (e) { mostrarError("t-error", e.message); });
+      });
+      $("reg-guardar").addEventListener("click", function () {
+        var n = $("reg-nombre").value.trim(), t = $("reg-tel").value.trim();
+        if (!n && !t) return mostrarError("t-error", "Escribe el nombre o el teléfono.");
+        accion("registro", { nombre: n, telefono: t }).catch(function (e) { mostrarError("t-error", e.message); });
+      });
+      $("h-deshacer").addEventListener("click", function () {
+        accion("deshacer").then(function (r) {
+          $("h-titulo").textContent = r.hecho;
+          $("h-detalle").textContent = "Lleva " + r.enTarjeta + " de " + r.meta + ".";
+          $("h-deshacer").hidden = true;
+        }).catch(function (e) { mostrarError("h-error", e.message); });
+      });
+      $("b-otro").addEventListener("click", function () { ver("escanear"); });
+      $("h-siguiente").addEventListener("click", function () { ver("escanear"); });
+      $("h-volver").addEventListener("click", function () { ver("tarjeta"); });
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) detenerCamara();
+        else if (!$("v-escanear").hidden) iniciarCamara();
+      });
+
+      /* ---------- Inicio ---------- */
+      if (urlScript() && leer(K_PIN)) ver("escanear"); else abrirConfig();
+    })();
+  </script>
+</body>
+</html>

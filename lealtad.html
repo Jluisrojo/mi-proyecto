@@ -465,6 +465,8 @@
       abrirDesdeForm($("buscar"), $("buscar-num"), $("buscar-error"));
       abrirDesdeForm($("cambiar"), $("cambiar-num"), $("cambiar-error"));
       document.addEventListener("visibilitychange", function () { if (!document.hidden && actual) cargar(); });
+      // Mientras el cliente tiene la tarjeta abierta en caja, se revisa sola cada 20 s
+      setInterval(function () { if (!document.hidden && actual) cargar(); }, 20000);
 
       /* ---------- Inicio ---------- */
       var desdeUrl = digitos(new URLSearchParams(location.search).get("t"));

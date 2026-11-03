@@ -22,26 +22,45 @@ Si alguien cancela, borra su fila. **No escribas nombres ni teléfonos**: la hoj
 
 ## 1b. Tarjeta de lealtad (cada 5 compras: café, smoothie o mini hotcakes gratis)
 
-Página para clientes: https://jluisrojo.github.io/mi-proyecto/lealtad.html
+- Tarjeta para clientes: https://jluisrojo.github.io/mi-proyecto/lealtad.html
+- Pantalla para el equipo (escanear y sumar sellos): https://jluisrojo.github.io/mi-proyecto/equipo.html
+- Cartel para imprimir y poner en el mostrador: https://jluisrojo.github.io/mi-proyecto/cartel.html
 
-**El cliente** abre ese enlace, toca *Crear mi tarjeta gratis* y la guarda en su celular (Agregar a inicio, o enviándosela por WhatsApp). Su tarjeta tiene un QR y un número como `480-518-6627`.
+### Cómo se usa en caja
 
-**En caja, en cada compra:**
+1. **El cliente** (la primera vez) escanea el QR del cartel, toca *Crear mi tarjeta gratis* y la guarda en su celular.
+2. **En cada compra** el cliente enseña su tarjeta. En el celular del equipo, en `equipo.html`, la cámara lee el QR.
+3. Se toca **Sumar sello** (con − / + se pueden dar varios). Se anota solo en la hoja y aparece en la tarjeta del cliente en 1 o 2 minutos.
+4. Cuando la pantalla dice **"Tiene 1 premio"**, se entrega el café, smoothie o mini hotcakes y se toca **Canjear premio**.
+5. Si se equivocaron, **Deshacer** borra el último movimiento (dentro de 15 minutos).
+6. Opcional: en *Anotar nombre del cliente* se guarda su nombre y teléfono en una hoja **privada**.
 
-1. El cliente muestra su tarjeta.
-2. Abre la hoja → pestaña **Lealtad** → agrega una fila:
-   `tarjeta` = el número (con o sin guiones) · `fecha` · `movimiento` = `sello`.
-   Si compró varias cosas y quieres dar más de un sello, pon el número en `cantidad` (vacío = 1).
-3. En 1 o 2 minutos el sello aparece en su tarjeta (puede tocar *Actualizar sellos*).
+### Instalar el script (una sola vez, ~5 minutos)
 
-**Cuando canjea su premio:** cuando la tarjeta diga *Premios disponibles: 1* o más, entrégale su café, smoothie o mini hotcakes y agrega una fila con `movimiento` = `canje`.
+La pantalla del equipo necesita un pequeño script de Google que escribe en la hoja. Es gratis.
 
-La página hace las cuentas sola: cada 5 sellos = 1 premio; los canjes se restan de los premios disponibles.
+1. Abre la hoja de Google → menú **Extensiones → Apps Script**.
+2. Borra lo que aparezca y pega TODO el contenido de [`apps-script/Codigo.gs`](apps-script/Codigo.gs) (en GitHub, botón *Copy raw file*).
+3. En la línea `const PIN = 'CAMBIA-ESTE-PIN';` cambia `CAMBIA-ESTE-PIN` por un PIN que solo sepa el equipo (por ejemplo `ditutti2026`). Guarda (💾).
+4. Arriba, elige la función **probar** y toca **▶ Ejecutar**. Google pedirá permisos: *Revisar permisos* → tu cuenta → *Configuración avanzada* → *Ir a … (no seguro)* → *Permitir*. (Dice "no seguro" solo porque el script es tuyo y no está verificado por Google.) Esto crea en tu Drive la hoja privada **"DiTutti · Clientes (privado)"**.
+5. Toca **Implementar → Nueva implementación** → engrane ⚙️ → **Aplicación web**:
+   - *Ejecutar como*: **Yo**
+   - *Quién tiene acceso*: **Cualquier usuario**
+   Toca **Implementar** y copia la **URL de la aplicación web** (termina en `/exec`).
+6. En el celular de cada persona del equipo abre `equipo.html`, pega esa URL y el PIN → *Guardar y empezar*. Se queda guardado en ese celular.
+   - Para pasarlo a otro celular: en *Ajustes* → *Enviar esta configuración a otro celular por WhatsApp*.
+   - Tip: en ese celular, *Agregar a la pantalla principal* para abrirla como app.
 
-- **No escribas nombres ni teléfonos** en esta pestaña: la hoja es visible para quien tenga el enlace.
-- Para borrar un sello que se puso por error, borra esa fila.
-- Para cambiar cuántos sellos se necesitan, los premios o los términos: `cursos.js`, sección `lealtad`.
-- Si un cliente pierde su tarjeta pero recuerda o tiene su número, en la página puede tocar *Ya tengo tarjeta* y escribirlo.
+Si cambias el código del script después: **Implementar → Administrar implementaciones → ✏️ → Versión: nueva versión → Implementar** (así la URL no cambia).
+
+### Datos y privacidad
+
+- La pestaña **Lealtad** (pública) solo guarda número de tarjeta, fecha y movimiento. **No escribas nombres ni teléfonos ahí.**
+- Nombres y teléfonos van a la hoja privada **"DiTutti · Clientes (privado)"** en tu Drive. Ahí ves quiénes son tus clientes; puedes cruzarla con la pestaña Lealtad por número de tarjeta.
+- Sin el PIN nadie puede agregar sellos aunque encuentre `equipo.html`.
+- También se puede anotar a mano: agrega una fila en la pestaña Lealtad con `tarjeta`, `fecha` y `movimiento` = `sello` o `canje` (`cantidad` vacío = 1).
+- Si un cliente pierde su tarjeta pero tiene su número (o lo buscas por nombre en la hoja privada), en `lealtad.html` puede tocar *Ya tengo tarjeta* y escribirlo.
+- Para cambiar cuántos sellos se necesitan: `cursos.js` (sección `lealtad`) **y** `SELLOS_POR_PREMIO` en el script.
 
 ## 2. Agregar un taller o curso nuevo
 
@@ -63,7 +82,10 @@ Los archivos de la página están en https://github.com/Jluisrojo/mi-proyecto
 - `index.html`: diseño y funcionamiento de la página.
 - `cursos.js`: número de WhatsApp, ubicación, enlace a la hoja y datos de respaldo.
 - `lealtad.html`: la tarjeta de lealtad.
-- `qrcode.js`: genera el QR de la tarjeta (no se edita).
+- `equipo.html`: pantalla del equipo para escanear y sumar sellos.
+- `cartel.html`: cartel imprimible con el QR de la tarjeta.
+- `apps-script/Codigo.gs`: script de Google que anota los sellos.
+- `qrcode.js`, `jsqr.js`: crean y leen los QR (no se editan).
 - `logo-ditutti.png`: el logo.
 
 Pasos:

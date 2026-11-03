@@ -57,6 +57,9 @@ window.DITUTTI = {
   // pestaña "Lealtad" de la hoja de Google (ver COMO_ACTUALIZAR.md).
   lealtad: {
     pestana: "Lealtad",
+    // Enlace del script de Google (apps-script/Codigo.gs) que usa la
+    // pantalla del equipo (equipo.html) para anotar sellos. Termina en /exec.
+    scriptUrl: "",
     sellosPorPremio: 5,
     premios: ["un café", "un smoothie", "unos mini hotcakes"],
     comoGanarSello: "Muestra tu tarjeta al pagar: cada compra suma un sello.",
