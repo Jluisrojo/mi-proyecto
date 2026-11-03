@@ -53,6 +53,23 @@ window.DITUTTI = {
 
   ubicacion: "DiTutti Concept Store · Zona Satélite, Estado de México",
 
+  // TARJETA DE LEALTAD (lealtad.html). Los sellos se anotan en la
+  // pestaña "Lealtad" de la hoja de Google (ver COMO_ACTUALIZAR.md).
+  lealtad: {
+    pestana: "Lealtad",
+    sellosPorPremio: 5,
+    premios: ["un café", "un smoothie", "unos mini hotcakes"],
+    comoGanarSello: "Muestra tu tarjeta al pagar: cada compra suma un sello.",
+    terminos: [
+      "Cada compra suma 1 sello. Muestra tu tarjeta (el QR o el número) antes de pagar.",
+      "Al juntar 5 sellos ganas un premio a elegir: un café, un smoothie o unos mini hotcakes.",
+      "Para canjear un premio, muestra tu tarjeta en caja. Un premio por visita.",
+      "Los premios no son canjeables por dinero ni acumulables con otras promociones.",
+      "Los sellos pueden tardar 1 o 2 minutos en aparecer en tu tarjeta.",
+      "La tarjeta es personal y no tiene fecha de vencimiento. DiTutti puede modificar el programa avisando con anticipación.",
+    ],
+  },
+
   actividades: [
     {
       id: "punch-needle",

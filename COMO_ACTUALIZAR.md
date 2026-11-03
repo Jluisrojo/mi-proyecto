@@ -20,6 +20,29 @@ No se necesita ninguna IA ni tocar código.
 
 Si alguien cancela, borra su fila. **No escribas nombres ni teléfonos**: la hoja es visible para quien tenga el enlace.
 
+## 1b. Tarjeta de lealtad (cada 5 compras: café, smoothie o mini hotcakes gratis)
+
+Página para clientes: https://jluisrojo.github.io/mi-proyecto/lealtad.html
+
+**El cliente** abre ese enlace, toca *Crear mi tarjeta gratis* y la guarda en su celular (Agregar a inicio, o enviándosela por WhatsApp). Su tarjeta tiene un QR y un número como `480-518-6627`.
+
+**En caja, en cada compra:**
+
+1. El cliente muestra su tarjeta.
+2. Abre la hoja → pestaña **Lealtad** → agrega una fila:
+   `tarjeta` = el número (con o sin guiones) · `fecha` · `movimiento` = `sello`.
+   Si compró varias cosas y quieres dar más de un sello, pon el número en `cantidad` (vacío = 1).
+3. En 1 o 2 minutos el sello aparece en su tarjeta (puede tocar *Actualizar sellos*).
+
+**Cuando canjea su premio:** cuando la tarjeta diga *Premios disponibles: 1* o más, entrégale su café, smoothie o mini hotcakes y agrega una fila con `movimiento` = `canje`.
+
+La página hace las cuentas sola: cada 5 sellos = 1 premio; los canjes se restan de los premios disponibles.
+
+- **No escribas nombres ni teléfonos** en esta pestaña: la hoja es visible para quien tenga el enlace.
+- Para borrar un sello que se puso por error, borra esa fila.
+- Para cambiar cuántos sellos se necesitan, los premios o los términos: `cursos.js`, sección `lealtad`.
+- Si un cliente pierde su tarjeta pero recuerda o tiene su número, en la página puede tocar *Ya tengo tarjeta* y escribirlo.
+
 ## 2. Agregar un taller o curso nuevo
 
 También desde la hoja, pestaña **Actividades**: llena una fila nueva. La pestaña **Instrucciones** explica cada columna.
@@ -39,6 +62,8 @@ Los archivos de la página están en https://github.com/Jluisrojo/mi-proyecto
 
 - `index.html`: diseño y funcionamiento de la página.
 - `cursos.js`: número de WhatsApp, ubicación, enlace a la hoja y datos de respaldo.
+- `lealtad.html`: la tarjeta de lealtad.
+- `qrcode.js`: genera el QR de la tarjeta (no se edita).
 - `logo-ditutti.png`: el logo.
 
 Pasos:

@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DiTutti · Tarjeta de lealtad</title>
+  <meta name="description" content="Tarjeta de lealtad de DiTutti Concept Store: cada 5 compras te regalamos un café, un smoothie o unos mini hotcakes.">
+  <meta name="theme-color" content="#5b3a24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DiTutti">
+  <link rel="icon" href="logo-ditutti.png">
+  <link rel="apple-touch-icon" href="logo-ditutti.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --surface: #fffaf3;
+      --ink: #2b211b;
+      --muted: #6f6157;
+      --line: #e6d9c8;
+      --brand: #5b3a24;
+      --brand-ink: #fdf6ec;
+      --brand-soft: #7a5236;
+      --accent: #c4552d;
+      --ok: #3d7a4f;
+      --wa: #1f9d55;
+      --radius: 20px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1714;
+        --surface: #262019;
+        --ink: #f3ebe1;
+        --muted: #b5a698;
+        --line: #3a3128;
+        --brand: #4a2f1d;
+        --brand-ink: #fdf6ec;
+        --brand-soft: #6b4730;
+        --accent: #e0774f;
+        --ok: #6fbf86;
+        --wa: #3cc276;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", system-ui, sans-serif;
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wrap { max-width: 460px; margin: 0 auto; padding: 20px 16px 48px; }
+    a { color: inherit; }
+    [hidden] { display: none !important; }
+
+    .back { display: inline-block; font-size: .9rem; color: var(--muted); text-decoration: none; margin-bottom: 14px; }
+
+    /* Tarjeta */
+    .pass {
+      background: var(--brand);
+      color: var(--brand-ink);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px -22px rgba(43, 33, 27, .6);
+    }
+    .pass-top { display: flex; align-items: center; gap: 12px; padding: 18px 20px 6px; }
+    .pass-top img { width: 46px; height: 46px; border-radius: 50%; background: #f7f1e8; padding: 2px; flex: none; }
+    .pass-top .t1 { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; opacity: .8; font-weight: 700; }
+    .pass-top .t2 { font-family: "Fraunces", Georgia, serif; font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
+
+    .stamps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 16px 18px;
+      margin: 10px 0 0;
+      background:
+        repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px),
+        var(--brand-soft);
+    }
+    .stamp {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px dashed rgba(253, 246, 236, .45);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+    .stamp svg { width: 52%; height: 52%; fill: none; stroke: rgba(253, 246, 236, .55); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .stamp.on { border: 0; background: #f7f1e8; }
+    .stamp.on img { width: 92%; height: 92%; object-fit: contain; }
+    .stamp.on.nuevo { animation: pop .5s ease-out both; }
+    @keyframes pop { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .stamp.on.nuevo { animation: none; } }
+
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px 6px; }
+    .stats .k { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; opacity: .8; font-weight: 700; }
+    .stats .v { font-family: "Fraunces", serif; font-size: 1.45rem; font-weight: 700; line-height: 1.15; }
+    .stats .r { text-align: right; }
+
+    .premio-listo {
+      margin: 10px 20px 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f7f1e8;
+      color: #2b211b;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .qr-box { padding: 18px 20px 22px; display: grid; justify-items: center; gap: 10px; }
+    .qr { background: #fff; padding: 14px; border-radius: 16px; width: 188px; height: 188px; }
+    .qr svg { width: 100%; height: 100%; display: block; shape-rendering: crispEdges; }
+    .num { font-size: 1.25rem; font-weight: 700; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+    .estado { font-size: .8rem; opacity: .8; min-height: 1.2em; text-align: center; }
+
+    /* Bloques de información */
+    .info { margin-top: 18px; display: grid; gap: 10px; }
+    .item { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+    .item h2 { font-size: 1rem; margin: 0 0 4px; }
+    .item p { margin: 0; color: var(--muted); }
+    .item ul, .item ol { margin: 6px 0 0; padding-left: 20px; color: var(--muted); }
+    .item li + li { margin-top: 4px; }
+    details.item summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    details.item summary::-webkit-details-marker { display: none; }
+    details.item summary::after { content: "⌄"; font-size: 1.2rem; line-height: 1; transition: transform .2s; }
+    details.item[open] summary::after { transform: rotate(180deg); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px; padding: 12px 20px; border-radius: 999px;
+      background: var(--ink); color: var(--bg);
+      border: 0; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+      width: 100%;
+    }
+    .btn.wa { background: var(--wa); color: #fff; }
+    .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+    .acciones { display: grid; gap: 10px; margin-top: 14px; }
+
+    /* Bienvenida (sin tarjeta) */
+    .hola { text-align: center; padding-top: 8px; }
+    .hola img { width: 104px; height: 104px; border-radius: 50%; }
+    .hola h1 { font-family: "Fraunces", serif; font-size: clamp(2rem, 9vw, 2.6rem); line-height: 1.05; margin: 14px 0 8px; letter-spacing: -0.02em; }
+    .hola h1 span { color: var(--accent); }
+    .hola .lead { color: var(--muted); margin: 0 auto 20px; max-width: 34ch; font-size: 1.05rem; }
+    .premios-ico { display: flex; justify-content: center; gap: 18px; margin: 4px 0 22px; }
+    .premios-ico div { display: grid; justify-items: center; gap: 4px; font-size: .85rem; color: var(--muted); }
+    .premios-ico span { width: 58px; height: 58px; border-radius: 50%; background: var(--brand); display: grid; place-items: center; }
+    .premios-ico svg { width: 30px; height: 30px; fill: none; stroke: var(--brand-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+    form.buscar { display: flex; gap: 8px; margin-top: 10px; }
+    form.buscar input {
+      flex: 1; min-width: 0; font: inherit; padding: 12px 14px; border-radius: 12px;
+      border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+    }
+    form.buscar .btn { width: auto; }
+    .error { color: var(--accent); font-size: .9rem; margin: 6px 0 0; }
+
+    .aviso-guardar {
+      margin-top: 14px; padding: 14px 16px; border-radius: 16px;
+      border: 1.5px dashed var(--accent); background: var(--surface);
+    }
+    .aviso-guardar strong { display: block; margin-bottom: 2px; }
+    .aviso-guardar p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+    footer { margin-top: 28px; color: var(--muted); font-size: .85rem; text-align: center; display: grid; gap: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Talleres y experiencias</a>
+
+    <!-- Sin tarjeta todavía -->
+    <section id="bienvenida" class="hola" hidden>
+      <img src="logo-ditutti.png" alt="DiTutti Concept Store" width="104" height="104">
+      <h1>Tarjeta de lealtad<span>.</span></h1>
+      <p class="lead" id="lead"></p>
+      <div class="premios-ico" id="premios-ico"></div>
+      <button type="button" class="btn" id="crear">Crear mi tarjeta gratis</button>
+      <details class="item" style="margin-top:16px;text-align:left">
+        <summary>Ya tengo tarjeta</summary>
+        <p style="margin-top:8px">Escribe el número que aparece debajo de tu QR.</p>
+        <form class="buscar" id="buscar">
+          <input id="buscar-num" inputmode="numeric" autocomplete="off" placeholder="000-000-0000" aria-label="Número de tarjeta">
+          <button class="btn" type="submit">Abrir</button>
+        </form>
+        <p class="error" id="buscar-error" hidden>Revisa el número: son 10 dígitos.</p>
+      </details>
+    </section>
+
+    <!-- Tarjeta -->
+    <section id="tarjeta" hidden>
+      <article class="pass" aria-label="Tarjeta de lealtad DiTutti">
+        <div class="pass-top">
+          <img src="logo-ditutti.png" alt="" width="46" height="46">
+          <div>
+            <div class="t1">DiTutti Concept Store</div>
+            <div class="t2">Tarjeta de lealtad</div>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div><div class="k">Hasta tu próximo premio</div><div class="v" id="faltan">–</div></div>
+          <div class="r"><div class="k">Premios disponibles</div><div class="v" id="disponibles">–</div></div>
+        </div>
+
+        <div class="premio-listo" id="premio-listo" hidden></div>
+
+        <div class="stamps" id="sellos" role="img"></div>
+
+        <div class="qr-box">
+          <div class="qr" id="qr" aria-hidden="true"></div>
+          <div class="num" id="num"></div>
+          <div class="estado" id="estado" aria-live="polite"></div>
+        </div>
+      </article>
+
+      <div class="aviso-guardar" id="aviso-guardar" hidden>
+        <strong>Guarda tu tarjeta para no perderla</strong>
+        <p id="como-guardar"></p>
+      </div>
+
+      <div class="acciones">
+        <a class="btn wa" id="enviar" target="_blank" rel="noopener">Enviarme mi tarjeta por WhatsApp</a>
+        <button type="button" class="btn ghost" id="actualizar">Actualizar sellos</button>
+      </div>
+
+      <div class="info">
+        <div class="item"><h2>Total de premios ganados</h2><p id="total">–</p></div>
+        <div class="item"><h2>Cómo conseguir un sello</h2><p id="como"></p></div>
+        <div class="item"><h2>Tu premio</h2><p id="premio"></p></div>
+        <details class="item"><summary>Guardar en mi celular</summary>
+          <ol>
+            <li><strong>iPhone (Safari):</strong> toca Compartir <span aria-hidden="true">⬆︎</span> → <em>Agregar a inicio</em>.</li>
+            <li><strong>Android (Chrome):</strong> toca el menú <span aria-hidden="true">⋮</span> → <em>Agregar a la pantalla principal</em>.</li>
+            <li>También puedes enviártela por WhatsApp o tomarle captura al QR.</li>
+          </ol>
+        </details>
+        <details class="item"><summary>Términos de uso</summary><ul id="terminos"></ul></details>
+        <details class="item"><summary>No es mi tarjeta</summary>
+          <p style="margin-top:8px">Abre otra tarjeta escribiendo su número.</p>
+          <form class="buscar" id="cambiar">
+            <input id="cambiar-num" inputmode="numeric" autocomplete="off" placeholder="000-000-0000" aria-label="Número de tarjeta">
+            <button class="btn" type="submit">Abrir</button>
+          </form>
+          <p class="error" id="cambiar-error" hidden>Revisa el número: son 10 dígitos.</p>
+        </details>
+      </div>
+    </section>
+
+    <footer id="pie"></footer>
+  </div>
+
+  <script src="qrcode.js"></script>
+  <script src="cursos.js"></script>
+  <script>
+    (function () {
+      var data = window.DITUTTI || {};
+      var cfg = Object.assign({
+        pestana: "Lealtad",
+        sellosPorPremio: 5,
+        premios: ["un café", "un smoothie", "unos mini hotcakes"],
+        comoGanarSello: "Muestra tu tarjeta al pagar: cada compra suma un sello.",
+        terminos: [],
+      }, data.lealtad || {});
+      var META = cfg.sellosPorPremio;
+      var CLAVE = "ditutti_tarjeta";
+      var $ = function (id) { return document.getElementById(id); };
+
+      var ICONOS = {
+        cafe: '<svg viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c-.6.8-.6 1.7 0 2.5M12 3c-.6.8-.6 1.7 0 2.5"/></svg>',
+        smoothie: '<svg viewBox="0 0 24 24"><path d="M6 8h12l-1.6 12.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8z"/><path d="M5 8a7 4 0 0 1 14 0"/><path d="M13 8l2-6 2.5.5"/></svg>',
+        hotcakes: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="9" rx="8" ry="2.5"/><path d="M4 9v2.5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V9"/><path d="M4 12v2.5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V12"/><path d="M3 19h18"/><path d="M11 6.5c0 1 .8 1.5 1.5 1.5"/></svg>',
+      };
+      var ORDEN_ICONOS = ["cafe", "smoothie", "hotcakes", "cafe", "smoothie"];
+
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function norm(s) { return String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase(); }
+      function digitos(s) { return String(s == null ? "" : s).replace(/\D/g, ""); }
+      function formato(d) { return d.slice(0, 3) + "-" + d.slice(3, 6) + "-" + d.slice(6); }
+      function valido(d) { return /^[1-9]\d{9}$/.test(d); }
+      function listaPremios() {
+        var p = cfg.premios;
+        return p.length > 1 ? p.slice(0, -1).join(", ") + " o " + p[p.length - 1] : p.join("");
+      }
+      function plural(n, uno, varios) { return n + " " + (n === 1 ? uno : varios); }
+      function waLink(texto, numero) {
+        return "https://wa.me/" + (numero || "") + "?text=" + encodeURIComponent(texto);
+      }
+
+      function guardarLocal(id) { try { localStorage.setItem(CLAVE, id); } catch (e) {} }
+      function leerLocal() { try { return localStorage.getItem(CLAVE) || ""; } catch (e) { return ""; } }
+
+      function nuevoId() {
+        var b = new Uint32Array(3);
+        (window.crypto || window.msCrypto).getRandomValues(b);
+        var d = String(1 + (b[0] % 9)) + String(b[1] % 100000).padStart(5, "0") + String(b[2] % 10000).padStart(4, "0");
+        return d;
+      }
+
+      /* ---------- Lectura de la hoja (pestaña Lealtad) ---------- */
+      function valorCelda(c) {
+        if (!c || c.v == null) return "";
+        if (typeof c.v === "number") return String(Math.round(c.v));
+        return String(c.v).trim();
+      }
+      function leerHoja(id, hoja) {
+        return new Promise(function (ok, mal) {
+          var cb = "ditutti_lealtad_" + Date.now();
+          var s = document.createElement("script");
+          var listo = false;
+          var t = setTimeout(function () { fin(); mal(new Error("La hoja tardó demasiado")); }, 8000);
+          function fin() { listo = true; clearTimeout(t); window[cb] = function () {}; s.remove(); }
+          window[cb] = function (r) {
+            fin();
+            if (!r || r.status === "error" || !r.table) return mal(new Error("No se pudo leer la pestaña " + hoja));
+            var cols = r.table.cols.map(function (c) { return norm(c.label).replace(/\s+/g, "_"); });
+            ok(r.table.rows.map(function (row) {
+              var o = {};
+              cols.forEach(function (k, i) { o[k] = valorCelda(row.c[i]); });
+              return o;
+            }));
+          };
+          s.onerror = function () { fin(); mal(new Error("Sin conexión con Google Sheets")); };
+          s.onload = function () { setTimeout(function () { if (!listo) { fin(); mal(new Error("La hoja no está compartida")); } }, 0); };
+          s.src = "https://docs.google.com/spreadsheets/d/" + encodeURIComponent(id) + "/gviz/tq?headers=1&sheet=" + encodeURIComponent(hoja) +
+            "&tqx=" + encodeURIComponent("out:json;responseHandler:" + cb) + "&_=" + Date.now();
+          document.head.appendChild(s);
+        });
+      }
+
+      // Columnas: tarjeta | fecha | movimiento ("sello" o "canje") | cantidad (opcional, 1 por defecto)
+      function resumen(filas, id) {
+        var sellos = 0, canjes = 0;
+        filas.forEach(function (f) {
+          if (digitos(f.tarjeta) !== id) return;
+          var n = parseInt(f.cantidad, 10);
+          if (!(n > 0)) n = 1;
+          var m = norm(f.movimiento);
+          if (m.indexOf("canje") === 0 || m.indexOf("premio") === 0) canjes += n;
+          else if (m === "" || m.indexOf("sello") === 0 || m.indexOf("compra") === 0) sellos += n;
+        });
+        var ganados = Math.floor(sellos / META);
+        return {
+          sellos: sellos,
+          ganados: ganados,
+          disponibles: Math.max(0, ganados - canjes),
+          enTarjeta: sellos % META,
+        };
+      }
+
+      /* ---------- Pintar ---------- */
+      function pintarSellos(n, antes) {
+        var html = "";
+        for (var i = 0; i < META; i++) {
+          if (i < n) html += '<div class="stamp on' + (antes != null && i >= antes ? " nuevo" : "") + '"><img src="logo-ditutti.png" alt=""></div>';
+          else html += '<div class="stamp">' + ICONOS[ORDEN_ICONOS[i % ORDEN_ICONOS.length]] + "</div>";
+        }
+        $("sellos").innerHTML = html;
+        $("sellos").setAttribute("aria-label", plural(n, "sello", "sellos") + " de " + META);
+      }
+
+      function pintarResumen(r, antes) {
+        var faltan = META - r.enTarjeta;
+        $("faltan").textContent = plural(faltan, "sello", "sellos");
+        $("disponibles").textContent = plural(r.disponibles, "premio", "premios");
+        $("total").textContent = plural(r.ganados, "premio", "premios") + " · " + plural(r.sellos, "sello", "sellos") + " en total";
+        var listo = $("premio-listo");
+        if (r.disponibles > 0) {
+          listo.hidden = false;
+          listo.textContent = "🎉 ¡Tienes " + plural(r.disponibles, "premio", "premios") + "! Muestra tu tarjeta en caja para canjear " + listaPremios() + ".";
+        } else listo.hidden = true;
+        pintarSellos(r.enTarjeta, antes);
+      }
+
+      var actual = null, ultimo = null;
+
+      function cargar() {
+        $("estado").textContent = "Consultando sellos…";
+        if (!data.hojaGoogle) { $("estado").textContent = "Los sellos todavía no están disponibles en línea."; return; }
+        leerHoja(data.hojaGoogle, cfg.pestana).then(function (filas) {
+          var r = resumen(filas, actual);
+          var antes = ultimo ? ultimo.enTarjeta : null;
+          if (ultimo && r.sellos === ultimo.sellos) antes = null;
+          pintarResumen(r, antes);
+          ultimo = r;
+          var h = new Date();
+          $("estado").textContent = "Actualizado a las " + h.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+        }).catch(function () {
+          $("estado").textContent = "No pudimos consultar tus sellos. Intenta de nuevo en un momento.";
+        });
+      }
+
+      function mostrarTarjeta(id, recienCreada) {
+        actual = id;
+        ultimo = null;
+        guardarLocal(id);
+        var url = new URL(location.href);
+        url.searchParams.set("t", id);
+        url.hash = "";
+        history.replaceState(null, "", url.toString());
+
+        $("bienvenida").hidden = true;
+        $("tarjeta").hidden = false;
+        $("num").textContent = formato(id);
+
+        $("qr").innerHTML = "";
+        if (window.qrcode) {
+          var q = window.qrcode(0, "M");
+          q.addData(formato(id));
+          q.make();
+          $("qr").innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+        }
+
+        $("enviar").href = waLink("Mi tarjeta de lealtad DiTutti (" + formato(id) + "): " + url.toString());
+        var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        $("como-guardar").textContent = (ios
+          ? "Toca Compartir ⬆︎ → «Agregar a inicio»"
+          : "Toca el menú ⋮ → «Agregar a la pantalla principal»") +
+          ", o envíatela por WhatsApp con el botón de abajo.";
+        $("aviso-guardar").hidden = !recienCreada;
+
+        pintarResumen({ sellos: 0, ganados: 0, disponibles: 0, enTarjeta: 0 }, null);
+        $("faltan").textContent = "–";
+        $("disponibles").textContent = "–";
+        cargar();
+      }
+
+      function abrirDesdeForm(form, input, error) {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var d = digitos(input.value);
+          if (!valido(d)) { error.hidden = false; return; }
+          error.hidden = true;
+          input.value = "";
+          mostrarTarjeta(d, false);
+          window.scrollTo(0, 0);
+        });
+      }
+
+      /* ---------- Textos fijos ---------- */
+      $("lead").textContent = "Por cada " + META + " compras te regalamos " + listaPremios() + ". Gratis y sin descargar nada.";
+      $("premios-ico").innerHTML =
+        '<div><span>' + ICONOS.cafe + "</span>Café</div>" +
+        '<div><span>' + ICONOS.smoothie + "</span>Smoothie</div>" +
+        '<div><span>' + ICONOS.hotcakes + "</span>Mini hotcakes</div>";
+      $("como").textContent = cfg.comoGanarSello;
+      $("premio").textContent = "¡Por cada " + META + " compras, te ganas " + listaPremios() + " gratis!";
+      $("terminos").innerHTML = cfg.terminos.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
+      var tel = data.whatsappVisible || data.whatsapp;
+      $("pie").innerHTML =
+        "<span>" + esc(data.ubicacion || "DiTutti Concept Store") + "</span>" +
+        (data.whatsapp ? '<span>¿Dudas? WhatsApp: <a href="' + esc(waLink("Hola, tengo una duda sobre mi tarjeta de lealtad DiTutti.", data.whatsapp)) + '" target="_blank" rel="noopener">' + esc(tel) + "</a></span>" : "");
+
+      $("crear").addEventListener("click", function () { mostrarTarjeta(nuevoId(), true); });
+      $("actualizar").addEventListener("click", cargar);
+      abrirDesdeForm($("buscar"), $("buscar-num"), $("buscar-error"));
+      abrirDesdeForm($("cambiar"), $("cambiar-num"), $("cambiar-error"));
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && actual) cargar(); });
+
+      /* ---------- Inicio ---------- */
+      var desdeUrl = digitos(new URLSearchParams(location.search).get("t"));
+      var inicial = valido(desdeUrl) ? desdeUrl : digitos(leerLocal());
+      if (valido(inicial)) mostrarTarjeta(inicial, false);
+      else $("bienvenida").hidden = false;
+    })();
+  </script>
+</body>
+</html>
