@@ -24,7 +24,7 @@ Si alguien cancela, borra su fila. **No escribas nombres ni teléfonos**: la hoj
 
 - Tarjeta para clientes: https://jluisrojo.github.io/mi-proyecto/lealtad.html
 - Pantalla para el equipo (escanear y sumar sellos): https://jluisrojo.github.io/mi-proyecto/equipo.html
-- Cartel para imprimir y poner en el mostrador: https://jluisrojo.github.io/mi-proyecto/cartel.html
+- Cartel A4 para imprimir y poner en el mostrador: [`cartel-lealtad-a4.pdf`](cartel-lealtad-a4.pdf) (o https://jluisrojo.github.io/mi-proyecto/cartel.html → Imprimir, tamaño A4, sin márgenes, con gráficos de fondo)
 
 ### Cómo se usa en caja
 
