@@ -33,7 +33,7 @@ Si alguien cancela, borra su fila. **No escribas nombres ni teléfonos**: la hoj
 3. Se toca **Sumar sello** (con − / + se pueden dar varios). Se anota solo en la hoja y aparece en la tarjeta del cliente en 1 o 2 minutos.
 4. Cuando la pantalla dice **"Tiene 1 premio"**, se entrega el café, smoothie o mini hotcakes y se toca **Canjear premio**.
 5. Si se equivocaron, **Deshacer** borra el último movimiento (dentro de 15 minutos).
-6. Opcional: en *Anotar nombre del cliente* se guarda su nombre y teléfono en una hoja **privada**.
+6. Opcional: en *Anotar datos del cliente* se guarda su nombre, correo y teléfono en una hoja **privada** (se abre solo cuando la tarjeta aún no tiene datos).
 
 ### Instalar el script (una sola vez, ~5 minutos)
 
@@ -56,7 +56,7 @@ Si cambias el código del script después: **Implementar → Administrar impleme
 ### Datos y privacidad
 
 - La pestaña **Lealtad** (pública) solo guarda número de tarjeta, fecha y movimiento. **No escribas nombres ni teléfonos ahí.**
-- Nombres y teléfonos van a la hoja privada **"DiTutti · Clientes (privado)"** en tu Drive. Ahí ves quiénes son tus clientes; puedes cruzarla con la pestaña Lealtad por número de tarjeta.
+- Nombres, correos y teléfonos van a la hoja privada **"DiTutti · Clientes (privado)"** en tu Drive. Ahí ves quiénes son tus clientes; puedes cruzarla con la pestaña Lealtad por número de tarjeta.
 - Sin el PIN nadie puede agregar sellos aunque encuentre `equipo.html`.
 - También se puede anotar a mano: agrega una fila en la pestaña Lealtad con `tarjeta`, `fecha` y `movimiento` = `sello` o `canje` (`cantidad` vacío = 1).
 - Si un cliente pierde su tarjeta pero tiene su número (o lo buscas por nombre en la hoja privada), en `lealtad.html` puede tocar *Ya tengo tarjeta* y escribirlo.

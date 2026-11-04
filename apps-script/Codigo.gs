@@ -9,7 +9,7 @@
   Qué hace:
     - Recibe lo que manda la pantalla del equipo (equipo.html) y anota
       sellos y canjes en la pestaña "Lealtad".
-    - Guarda nombre y teléfono de los clientes (opcional) en OTRA hoja
+    - Guarda nombre, correo y teléfono de los clientes (opcional) en OTRA hoja
       privada, "DiTutti · Clientes (privado)", que se crea sola en tu
       Google Drive. La hoja pública nunca tiene datos personales.
   ============================================================
@@ -74,13 +74,18 @@ function atender(p) {
       res = resumen(hoja, tarjeta);
       res.hecho = 'Se deshizo el último movimiento';
     } else if (accion === 'registro') {
-      guardarCliente(tarjeta, String(p.nombre || '').trim(), String(p.telefono || '').trim());
+      guardarCliente(tarjeta, {
+        nombre: String(p.nombre || '').trim(),
+        correo: String(p.correo || '').trim(),
+        telefono: String(p.telefono || '').trim(),
+      });
       res.hecho = 'Cliente guardado';
     }
 
     const cliente = buscarCliente(tarjeta);
     res.nombre = cliente ? cliente.nombre : '';
     res.telefono = cliente ? cliente.telefono : '';
+    res.correo = cliente ? cliente.correo : '';
     res.ok = true;
     delete res.ultimaFila;
     return res;
@@ -144,36 +149,72 @@ function hojaClientes() {
     libro = SpreadsheetApp.create('DiTutti · Clientes (privado)');
     const h = libro.getSheets()[0];
     h.setName('Clientes');
-    h.appendRow(['tarjeta', 'nombre', 'telefono', 'registro']);
+    h.appendRow(CAMPOS_CLIENTE);
     h.setFrozenRows(1);
-    h.getRange('A:A').setNumberFormat('@');
-    h.getRange('C:C').setNumberFormat('@');
+    h.getRange('A:D').setNumberFormat('@');
     props.setProperty('HOJA_CLIENTES', libro.getId());
   }
   return libro.getSheets()[0];
 }
 
+// Columnas de la hoja privada. Se buscan por nombre de encabezado; si falta
+// alguna (por ejemplo "correo" en hojas creadas antes), se agrega al final.
+const CAMPOS_CLIENTE = ['tarjeta', 'nombre', 'correo', 'telefono', 'registro'];
+
+function columnasClientes(hoja) {
+  const ultima = Math.max(1, hoja.getLastColumn());
+  const enc = hoja.getRange(1, 1, 1, ultima).getValues()[0].map(function (h) { return quitarAcentos(h); });
+  const col = {};
+  CAMPOS_CLIENTE.forEach(function (k) {
+    let i = enc.indexOf(k);
+    if (i < 0) {
+      i = enc.length;
+      enc.push(k);
+      hoja.getRange(1, i + 1).setValue(k);
+      if (k !== 'registro') hoja.getRange(2, i + 1, Math.max(1, hoja.getMaxRows() - 1), 1).setNumberFormat('@');
+    }
+    col[k] = i;
+  });
+  return col;
+}
+
 function buscarCliente(tarjeta) {
   const id = PropertiesService.getScriptProperties().getProperty('HOJA_CLIENTES');
   if (!id) return null;
-  const datos = hojaClientes().getDataRange().getValues();
+  const hoja = hojaClientes();
+  const col = columnasClientes(hoja);
+  const datos = hoja.getDataRange().getValues();
   for (let i = 1; i < datos.length; i++) {
-    if (String(datos[i][0]).replace(/\D/g, '') === tarjeta) {
-      return { fila: i + 1, nombre: String(datos[i][1] || ''), telefono: String(datos[i][2] || '') };
+    if (String(datos[i][col.tarjeta]).replace(/\D/g, '') === tarjeta) {
+      return {
+        fila: i + 1,
+        nombre: String(datos[i][col.nombre] || ''),
+        correo: String(datos[i][col.correo] || ''),
+        telefono: String(datos[i][col.telefono] || ''),
+      };
     }
   }
   return null;
 }
 
-function guardarCliente(tarjeta, nombre, telefono) {
-  if (!nombre && !telefono) return;
+function guardarCliente(tarjeta, d) {
+  if (!d.nombre && !d.correo && !d.telefono) return;
   const hoja = hojaClientes();
+  const col = columnasClientes(hoja);
   const c = buscarCliente(tarjeta);
   if (c) {
-    if (nombre) hoja.getRange(c.fila, 2).setValue(nombre);
-    if (telefono) hoja.getRange(c.fila, 3).setValue(telefono);
+    ['nombre', 'correo', 'telefono'].forEach(function (k) {
+      if (d[k]) hoja.getRange(c.fila, col[k] + 1).setValue(d[k]);
+    });
   } else {
-    hoja.appendRow([formato(tarjeta), nombre, telefono, new Date()]);
+    const fila = [];
+    fila[col.tarjeta] = formato(tarjeta);
+    fila[col.nombre] = d.nombre;
+    fila[col.correo] = d.correo;
+    fila[col.telefono] = d.telefono;
+    fila[col.registro] = new Date();
+    for (let i = 0; i < fila.length; i++) if (fila[i] === undefined) fila[i] = '';
+    hoja.appendRow(fila);
   }
 }
 

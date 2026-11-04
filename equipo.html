@@ -139,12 +139,14 @@
         <button class="btn premio" id="b-canje" type="button">🎁 Canjear premio</button>
         <p class="error" id="t-error" hidden></p>
         <details class="registro" id="registro">
-          <summary id="reg-titulo">Anotar nombre del cliente (opcional)</summary>
+          <summary id="reg-titulo">Datos del cliente (opcional)</summary>
           <div class="stack">
             <div><label for="reg-nombre">Nombre</label><input id="reg-nombre" autocomplete="off"></div>
-            <div><label for="reg-tel">Teléfono</label><input id="reg-tel" inputmode="tel" autocomplete="off"></div>
+            <div><label for="reg-correo">Correo</label><input id="reg-correo" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+            <div><label for="reg-tel">Teléfono</label><input id="reg-tel" type="tel" inputmode="tel" autocomplete="off"></div>
             <p class="nota" style="margin:0">Se guarda en la hoja privada de clientes, no en la pública.</p>
-            <button class="btn ghost" id="reg-guardar" type="button">Guardar nombre</button>
+            <button class="btn" id="reg-guardar" type="button">Guardar datos</button>
+            <p class="nota" id="reg-ok" hidden style="margin:0;color:var(--ok);font-weight:700">✓ Datos guardados</p>
           </div>
         </details>
         <button class="btn ghost" id="b-otro" type="button">Escanear otra tarjeta</button>
@@ -337,10 +339,13 @@
         $("t-premio").textContent = "🎉 Tiene " + plural(r.disponibles, "premio", "premios") + " para canjear";
         $("b-canje").disabled = r.disponibles < 1;
         $("b-canje").textContent = r.disponibles > 0 ? "🎁 Canjear premio (" + premios.join(" / ").replace(/\b(un|unos)\s/g, "") + ")" : "🎁 Sin premios por ahora";
-        $("reg-titulo").textContent = r.nombre ? "Cambiar nombre o teléfono" : "Anotar nombre del cliente (opcional)";
+        var tieneDatos = !!(r.nombre || r.correo || r.telefono);
+        $("reg-titulo").textContent = tieneDatos ? "Ver o cambiar datos del cliente" : "Anotar datos del cliente (opcional)";
         $("reg-nombre").value = r.nombre || "";
+        $("reg-correo").value = r.correo || "";
         $("reg-tel").value = r.telefono || "";
-        $("registro").open = false;
+        // Si la tarjeta todavía no tiene datos, el formulario se abre solo
+        $("registro").open = !tieneDatos && r.nombre !== "Buscando…" && !!r.ok;
       }
 
       function abrirTarjeta(d) {
@@ -382,9 +387,14 @@
         accion("canje").then(confirmar).catch(function (e) { mostrarError("t-error", e.message); });
       });
       $("reg-guardar").addEventListener("click", function () {
-        var n = $("reg-nombre").value.trim(), t = $("reg-tel").value.trim();
-        if (!n && !t) return mostrarError("t-error", "Escribe el nombre o el teléfono.");
-        accion("registro", { nombre: n, telefono: t }).catch(function (e) { mostrarError("t-error", e.message); });
+        var n = $("reg-nombre").value.trim(), c = $("reg-correo").value.trim(), t = $("reg-tel").value.trim();
+        $("reg-ok").hidden = true;
+        if (!n && !c && !t) return mostrarError("t-error", "Escribe al menos el nombre, el correo o el teléfono.");
+        if (c && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return mostrarError("t-error", "Revisa el correo, por ejemplo: ana@gmail.com");
+        accion("registro", { nombre: n, correo: c, telefono: t }).then(function () {
+          $("registro").open = true;
+          $("reg-ok").hidden = false;
+        }).catch(function (e) { mostrarError("t-error", e.message); });
       });
       $("h-deshacer").addEventListener("click", function () {
         accion("deshacer").then(function (r) {
