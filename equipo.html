@@ -29,7 +29,7 @@
     .top .sp { flex: 1; }
     .link { background: none; border: 0; color: var(--muted); font: inherit; font-size: .9rem; text-decoration: underline; cursor: pointer; padding: 8px; }
 
-    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; padding: 14px 18px; border-radius: 16px; border: 0; font: inherit; font-weight: 700; font-size: 1.15rem; cursor: pointer; background: var(--ink); color: var(--bg); text-decoration: none; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; padding: 14px 18px; border-radius: 16px; border: 0; font: inherit; font-weight: 700; font-size: 1.15rem; cursor: pointer; background: var(--ink); color: var(--bg); text-decoration: none; text-align: center; }
     .btn.sello { background: var(--brand); color: var(--brand-ink); min-height: 76px; font-size: 1.35rem; }
     .btn.premio { background: var(--ok); color: #fff; }
     .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
@@ -39,6 +39,7 @@
     label { display: block; font-weight: 700; margin: 0 0 6px; }
     input { width: 100%; font: inherit; font-size: 1.1rem; padding: 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
     .nota { color: var(--muted); font-size: .95rem; margin: 6px 0 0; }
+    .nota a { color: inherit; }
     .error { color: var(--bad); font-weight: 700; margin: 8px 0 0; }
 
     /* Escáner */
@@ -68,6 +69,9 @@
     details.registro { background: var(--surface); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px; }
     details.registro summary { font-weight: 700; cursor: pointer; }
     details.registro .stack { margin-top: 12px; }
+    .check-promo { display: flex; gap: 10px; align-items: center; font-weight: 500; }
+    .check-promo input { width: 24px; height: 24px; flex: none; accent-color: var(--brand); }
+    .btn.wa { background: var(--wa); color: #fff; }
 
     /* Confirmación */
     .hecho { text-align: center; padding: 18px 0 8px; }
@@ -144,9 +148,11 @@
             <div><label for="reg-nombre">Nombre</label><input id="reg-nombre" autocomplete="off"></div>
             <div><label for="reg-correo">Correo</label><input id="reg-correo" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
             <div><label for="reg-tel">Teléfono</label><input id="reg-tel" type="tel" inputmode="tel" autocomplete="off"></div>
-            <p class="nota" style="margin:0">Se guarda en la hoja privada de clientes, no en la pública.</p>
+            <label class="check-promo"><input type="checkbox" id="reg-promo"> Acepta recibir promociones por WhatsApp o correo</label>
+            <p class="nota" style="margin:0">Antes de anotar, pregunta: <em>«¿Nos das tus datos para tu tarjeta? ¿Te podemos mandar promociones?»</em> Se guardan en la hoja privada, no en la pública. <a href="aviso-privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a></p>
             <button class="btn" id="reg-guardar" type="button">Guardar datos</button>
             <p class="nota" id="reg-ok" hidden style="margin:0;color:var(--ok);font-weight:700">✓ Datos guardados</p>
+            <a class="btn wa" id="reg-wa" target="_blank" rel="noopener" hidden>Enviarle su tarjeta por WhatsApp</a>
           </div>
         </details>
         <button class="btn ghost" id="b-otro" type="button">Escanear otra tarjeta</button>
@@ -344,8 +350,29 @@
         $("reg-nombre").value = r.nombre || "";
         $("reg-correo").value = r.correo || "";
         $("reg-tel").value = r.telefono || "";
+        $("reg-promo").checked = /^(si|sí)$/i.test(String(r.promociones || ""));
+        pintarWa(r);
         // Si la tarjeta todavía no tiene datos, el formulario se abre solo
         $("registro").open = !tieneDatos && r.nombre !== "Buscando…" && !!r.ok;
+      }
+
+      // Botón para mandarle al cliente el enlace de SU tarjeta a su WhatsApp
+      function telWa(t) {
+        var d = digitos(t);
+        if (d.length === 10) return "52" + d;
+        if (d.length === 12 && d.indexOf("52") === 0) return d;
+        if (d.length === 13 && d.indexOf("521") === 0) return "52" + d.slice(3);
+        return "";
+      }
+      function pintarWa(r) {
+        var n = telWa(r.telefono), a = $("reg-wa");
+        a.hidden = !n || !actual;
+        if (a.hidden) return;
+        var link = new URL("lealtad.html?t=" + actual, location.href).href;
+        var hola = r.nombre ? "¡Hola " + String(r.nombre).split(" ")[0] + "!" : "¡Hola!";
+        a.href = "https://wa.me/" + n + "?text=" + encodeURIComponent(
+          hola + " Esta es tu tarjeta de lealtad DiTutti ☕ (" + formato(actual) + "):\n" + link +
+          "\n\nCada 5 compras te regalamos un café, un smoothie o unos mini hotcakes. Ábrela desde este chat cuando vengas y enséñanos el QR.");
       }
 
       function abrirTarjeta(d) {
@@ -387,11 +414,12 @@
         accion("canje").then(confirmar).catch(function (e) { mostrarError("t-error", e.message); });
       });
       $("reg-guardar").addEventListener("click", function () {
-        var n = $("reg-nombre").value.trim(), c = $("reg-correo").value.trim(), t = $("reg-tel").value.trim();
+        var n = $("reg-nombre").value.trim(), c = $("reg-correo").value.trim(), t = $("reg-tel").value.trim(), pr = $("reg-promo").checked ? "sí" : "no";
         $("reg-ok").hidden = true;
         if (!n && !c && !t) return mostrarError("t-error", "Escribe al menos el nombre, el correo o el teléfono.");
         if (c && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return mostrarError("t-error", "Revisa el correo, por ejemplo: ana@gmail.com");
-        accion("registro", { nombre: n, correo: c, telefono: t }).then(function () {
+        if (t && !telWa(t)) return mostrarError("t-error", "Revisa el teléfono: son 10 dígitos, por ejemplo 55 1234 5678.");
+        accion("registro", { nombre: n, correo: c, telefono: t, promociones: pr }).then(function () {
           $("registro").open = true;
           $("reg-ok").hidden = false;
         }).catch(function (e) { mostrarError("t-error", e.message); });

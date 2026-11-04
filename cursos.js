@@ -61,6 +61,15 @@ window.DITUTTI = {
     // pantalla del equipo (equipo.html) para anotar sellos. Termina en /exec.
     scriptUrl: "https://script.google.com/macros/s/AKfycbwZ-Y0GcONzY7UMqizrIgkfNtjuXetoZ4DlFcX05ujduMBjPIhyYUWS9fdc0XBfr3kp/exec",
     sellosPorPremio: 5,
+    // Datos para el aviso de privacidad (aviso-privacidad.html).
+    // Llénalos con el nombre legal y el domicilio completo del negocio.
+    // Mientras digan POR_CONFIRMAR, el aviso muestra "DiTutti Concept Store"
+    // y la ubicación de arriba.
+    privacidad: {
+      responsable: "POR_CONFIRMAR", // ej. "Nombre de la persona o empresa, operando como DiTutti Concept Store"
+      domicilio: "POR_CONFIRMAR",   // ej. "Calle 123, Col. Ciudad Satélite, Naucalpan, Edo. de México, C.P. 53100"
+      correo: "POR_CONFIRMAR",      // correo para temas de privacidad (opcional)
+    },
     premios: ["un café", "un smoothie", "unos mini hotcakes"],
     comoGanarSello: "Muestra tu tarjeta al pagar: cada compra suma un sello.",
     terminos: [

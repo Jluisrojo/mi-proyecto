@@ -78,6 +78,7 @@ function atender(p) {
         nombre: String(p.nombre || '').trim(),
         correo: String(p.correo || '').trim(),
         telefono: String(p.telefono || '').trim(),
+        promociones: String(p.promociones || '').trim(),
       });
       res.hecho = 'Cliente guardado';
     }
@@ -86,6 +87,7 @@ function atender(p) {
     res.nombre = cliente ? cliente.nombre : '';
     res.telefono = cliente ? cliente.telefono : '';
     res.correo = cliente ? cliente.correo : '';
+    res.promociones = cliente ? cliente.promociones : '';
     res.ok = true;
     delete res.ultimaFila;
     return res;
@@ -159,7 +161,7 @@ function hojaClientes() {
 
 // Columnas de la hoja privada. Se buscan por nombre de encabezado; si falta
 // alguna (por ejemplo "correo" en hojas creadas antes), se agrega al final.
-const CAMPOS_CLIENTE = ['tarjeta', 'nombre', 'correo', 'telefono', 'registro'];
+const CAMPOS_CLIENTE = ['tarjeta', 'nombre', 'correo', 'telefono', 'registro', 'promociones'];
 
 function columnasClientes(hoja) {
   const ultima = Math.max(1, hoja.getLastColumn());
@@ -191,6 +193,7 @@ function buscarCliente(tarjeta) {
         nombre: String(datos[i][col.nombre] || ''),
         correo: String(datos[i][col.correo] || ''),
         telefono: String(datos[i][col.telefono] || ''),
+        promociones: String(datos[i][col.promociones] || ''),
       };
     }
   }
@@ -198,12 +201,12 @@ function buscarCliente(tarjeta) {
 }
 
 function guardarCliente(tarjeta, d) {
-  if (!d.nombre && !d.correo && !d.telefono) return;
+  if (!d.nombre && !d.correo && !d.telefono && !d.promociones) return;
   const hoja = hojaClientes();
   const col = columnasClientes(hoja);
   const c = buscarCliente(tarjeta);
   if (c) {
-    ['nombre', 'correo', 'telefono'].forEach(function (k) {
+    ['nombre', 'correo', 'telefono', 'promociones'].forEach(function (k) {
       if (d[k]) hoja.getRange(c.fila, col[k] + 1).setValue(d[k]);
     });
   } else {
@@ -213,6 +216,7 @@ function guardarCliente(tarjeta, d) {
     fila[col.correo] = d.correo;
     fila[col.telefono] = d.telefono;
     fila[col.registro] = new Date();
+    fila[col.promociones] = d.promociones;
     for (let i = 0; i < fila.length; i++) if (fila[i] === undefined) fila[i] = '';
     hoja.appendRow(fila);
   }

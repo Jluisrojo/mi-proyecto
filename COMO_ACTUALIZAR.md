@@ -35,6 +35,22 @@ Si alguien cancela, borra su fila. **No escribas nombres ni teléfonos**: la hoj
 5. Si se equivocaron, **Deshacer** borra el último movimiento (dentro de 15 minutos).
 6. Opcional: en *Anotar datos del cliente* se guarda su nombre, correo y teléfono en una hoja **privada** (se abre solo cuando la tarjeta aún no tiene datos).
 
+### Cómo encuentra el cliente su tarjeta cada vez
+
+- **En el mismo celular, se abre sola.** La página recuerda su número: basta con abrir el enlace de su tarjeta o volver a escanear el QR del cartel.
+- **Lo más seguro: mandársela por WhatsApp.** Al anotar su teléfono en la pantalla del equipo, toca **Enviarle su tarjeta por WhatsApp**: le llega un mensaje con el enlace de SU tarjeta. Cada vez que venga, la abre desde ese chat.
+- **Si la pierde o cambia de celular:** busca su nombre o teléfono en la hoja privada de clientes, copia su número de tarjeta, escanea o escribe ese número en la pantalla del equipo y reenvíasela por WhatsApp. También puede escribir el número en *Ya tengo tarjeta*.
+- No debe crear una tarjeta nueva: perdería los sellos de la anterior.
+
+### Aviso de privacidad
+
+Página: https://jluisrojo.github.io/mi-proyecto/aviso-privacidad.html (enlazada desde la tarjeta y desde la pantalla del equipo).
+
+- Llena en `cursos.js` → `lealtad.privacidad` el nombre legal del responsable, el domicilio completo y, si quieres, un correo de contacto. Mientras digan `POR_CONFIRMAR`, el aviso muestra "DiTutti Concept Store" y la ubicación general.
+- Antes de anotar datos, pregúntale al cliente si está de acuerdo y si acepta promociones. La casilla *Acepta recibir promociones* queda guardada en la columna `promociones` de la hoja privada (`sí` / `no`).
+- Si un cliente escribe **BAJA**, cambia su `promociones` a `no` (o desmarca la casilla al escanearlo). Si pide borrar sus datos, borra su fila de la hoja privada; su tarjeta y sellos siguen funcionando.
+- Es un aviso general. Si el negocio crece o usas los datos para algo más, conviene que lo revise un abogado.
+
 ### Instalar el script (una sola vez, ~5 minutos)
 
 La pantalla del equipo necesita un pequeño script de Google que escribe en la hoja. Es gratis.
@@ -84,6 +100,7 @@ Los archivos de la página están en https://github.com/Jluisrojo/mi-proyecto
 - `lealtad.html`: la tarjeta de lealtad.
 - `equipo.html`: pantalla del equipo para escanear y sumar sellos.
 - `cartel.html`: cartel imprimible con el QR de la tarjeta.
+- `aviso-privacidad.html`: aviso de privacidad de la tarjeta.
 - `apps-script/Codigo.gs`: script de Google que anota los sellos.
 - `qrcode.js`, `jsqr.js`: crean y leen los QR (no se editan).
 - `logo-ditutti.png`: el logo.

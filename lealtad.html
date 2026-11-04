@@ -159,6 +159,7 @@
     }
     form.buscar .btn { width: auto; }
     .error { color: var(--accent); font-size: .9rem; margin: 6px 0 0; }
+    .legal { color: var(--muted); font-size: .82rem; margin: 10px auto 0; max-width: 36ch; }
 
     .aviso-guardar {
       margin-top: 14px; padding: 14px 16px; border-radius: 16px;
@@ -181,9 +182,10 @@
       <p class="lead" id="lead"></p>
       <div class="premios-ico" id="premios-ico"></div>
       <button type="button" class="btn" id="crear">Crear mi tarjeta gratis</button>
+      <p class="legal">Al crear tu tarjeta aceptas los términos del programa y nuestro <a href="aviso-privacidad.html">aviso de privacidad</a>.</p>
       <details class="item" style="margin-top:16px;text-align:left">
         <summary>Ya tengo tarjeta</summary>
-        <p style="margin-top:8px">Escribe el número que aparece debajo de tu QR.</p>
+        <p style="margin-top:8px">Escribe el número que aparece debajo de tu QR. ¿No lo tienes? Pídelo en caja: te mandamos tu tarjeta por WhatsApp.</p>
         <form class="buscar" id="buscar">
           <input id="buscar-num" inputmode="numeric" autocomplete="off" placeholder="000-000-0000" aria-label="Número de tarjeta">
           <button class="btn" type="submit">Abrir</button>
@@ -240,7 +242,7 @@
             <li>También puedes enviártela por WhatsApp o tomarle captura al QR.</li>
           </ol>
         </details>
-        <details class="item"><summary>Términos de uso</summary><ul id="terminos"></ul></details>
+        <details class="item"><summary>Términos de uso</summary><ul id="terminos"></ul><p style="margin-top:8px"><a href="aviso-privacidad.html">Aviso de privacidad</a></p></details>
         <details class="item"><summary>No es mi tarjeta</summary>
           <p style="margin-top:8px">Abre otra tarjeta escribiendo su número.</p>
           <form class="buscar" id="cambiar">
@@ -458,7 +460,8 @@
       var tel = data.whatsappVisible || data.whatsapp;
       $("pie").innerHTML =
         "<span>" + esc(data.ubicacion || "DiTutti Concept Store") + "</span>" +
-        (data.whatsapp ? '<span>¿Dudas? WhatsApp: <a href="' + esc(waLink("Hola, tengo una duda sobre mi tarjeta de lealtad DiTutti.", data.whatsapp)) + '" target="_blank" rel="noopener">' + esc(tel) + "</a></span>" : "");
+        (data.whatsapp ? '<span>¿Dudas? WhatsApp: <a href="' + esc(waLink("Hola, tengo una duda sobre mi tarjeta de lealtad DiTutti.", data.whatsapp)) + '" target="_blank" rel="noopener">' + esc(tel) + "</a></span>" : "") +
+        '<span><a href="aviso-privacidad.html">Aviso de privacidad</a></span>';
 
       $("crear").addEventListener("click", function () { mostrarTarjeta(nuevoId(), true); });
       $("actualizar").addEventListener("click", cargar);
