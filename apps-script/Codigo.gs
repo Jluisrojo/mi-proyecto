@@ -33,6 +33,11 @@ function doGet(e) {
   } catch (err) {
     r = { ok: false, error: String((err && err.message) || err) };
   }
+  const cb = String(((e && e.parameter) || {}).callback || '');
+  if (/^[A-Za-z_$][\w$]{0,60}$/.test(cb)) {
+    // Respuesta JSONP: la pantalla del equipo la carga como <script>, sin problemas de permisos del navegador
+    return ContentService.createTextOutput(cb + '(' + JSON.stringify(r) + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
   return ContentService.createTextOutput(JSON.stringify(r)).setMimeType(ContentService.MimeType.JSON);
 }
 

@@ -204,14 +204,31 @@
       }
 
       /* ---------- Llamadas al script ---------- */
+      // Se llama al script como <script> (JSONP): funciona en todos los navegadores, sin bloqueos de permisos
+      function jsonp(url) {
+        return new Promise(function (ok, mal) {
+          var cb = "ditutti_eq_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+          var s = document.createElement("script");
+          var t = setTimeout(function () { fin(); mal(new Error("tarde")); }, 20000);
+          function fin() { clearTimeout(t); window[cb] = function () {}; s.remove(); }
+          window[cb] = function (r) { fin(); ok(r); };
+          s.onerror = function () { fin(); mal(new Error("red")); };
+          s.onload = function () { setTimeout(function () { if (s.isConnected) { fin(); mal(new Error("version")); } }, 50); };
+          s.src = url + (url.indexOf("?") < 0 ? "?" : "&") + "callback=" + cb;
+          document.head.appendChild(s);
+        });
+      }
       function llamar(params) {
         var q = new URLSearchParams(params);
         q.set("pin", leer(K_PIN));
         q.set("_", Date.now());
         document.body.classList.add("cargando");
-        return fetch(urlScript() + "?" + q.toString(), { redirect: "follow" })
-          .then(function (r) { return r.json(); })
-          .catch(function () { throw new Error("Sin conexión con Google. Revisa el internet e intenta de nuevo."); })
+        return jsonp(urlScript() + "?" + q.toString())
+          .catch(function (e) {
+            if (e.message === "version") throw new Error("El script de Google está desactualizado: vuelve a pegar el código y publica una nueva versión (ver guía).");
+            if (e.message === "tarde") throw new Error("Google tardó demasiado. Intenta de nuevo.");
+            throw new Error("No se pudo conectar con Google. Revisa el internet. Si sigue igual, actualiza el script de Google (ver guía).");
+          })
           .then(function (r) {
             if (!r.ok && r.error === "pin") { ver("config"); throw new Error("El PIN no es correcto."); }
             return r;
