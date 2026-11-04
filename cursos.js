@@ -59,7 +59,7 @@ window.DITUTTI = {
     pestana: "Lealtad",
     // Enlace del script de Google (apps-script/Codigo.gs) que usa la
     // pantalla del equipo (equipo.html) para anotar sellos. Termina en /exec.
-    scriptUrl: "",
+    scriptUrl: "https://script.google.com/macros/s/AKfycbwZ-Y0GcONzY7UMqizrIgkfNtjuXetoZ4DlFcX05ujduMBjPIhyYUWS9fdc0XBfr3kp/exec",
     sellosPorPremio: 5,
     premios: ["un café", "un smoothie", "unos mini hotcakes"],
     comoGanarSello: "Muestra tu tarjeta al pagar: cada compra suma un sello.",
