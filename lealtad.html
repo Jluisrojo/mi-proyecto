@@ -229,6 +229,7 @@
       <div class="acciones">
         <a class="btn wa" id="enviar" target="_blank" rel="noopener">Enviarme mi tarjeta por WhatsApp</a>
         <button type="button" class="btn ghost" id="actualizar">Actualizar sellos</button>
+        <button type="button" class="btn ghost" id="invitar">Invitar a alguien al programa</button>
       </div>
 
       <div class="info">
@@ -243,8 +244,10 @@
           </ol>
         </details>
         <details class="item"><summary>Términos de uso</summary><ul id="terminos"></ul><p style="margin-top:8px"><a href="aviso-privacidad.html">Aviso de privacidad</a></p></details>
-        <details class="item"><summary>No es mi tarjeta</summary>
-          <p style="margin-top:8px">Abre otra tarjeta escribiendo su número.</p>
+        <details class="item"><summary>¿No es tu tarjeta?</summary>
+          <p style="margin-top:8px">Si alguien te compartió su tarjeta por error, sal de ella para crear la tuya.</p>
+          <button type="button" class="btn" id="salir" style="margin-top:10px">Salir de esta tarjeta</button>
+          <p style="margin-top:14px">O abre otra tarjeta escribiendo su número:</p>
           <form class="buscar" id="cambiar">
             <input id="cambiar-num" inputmode="numeric" autocomplete="off" placeholder="000-000-0000" aria-label="Número de tarjeta">
             <button class="btn" type="submit">Abrir</button>
@@ -422,7 +425,7 @@
           $("qr").innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
         }
 
-        $("enviar").href = waLink("Mi tarjeta de lealtad DiTutti (" + formato(id) + "): " + url.toString());
+        $("enviar").href = waLink("Mi tarjeta de lealtad DiTutti (" + formato(id) + "). Es personal, no la compartas: " + url.toString());
         var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
         $("como-guardar").textContent = (ios
           ? "Toca Compartir ⬆︎ → «Agregar a inicio»"
@@ -467,6 +470,28 @@
       $("actualizar").addEventListener("click", cargar);
       abrirDesdeForm($("buscar"), $("buscar-num"), $("buscar-error"));
       abrirDesdeForm($("cambiar"), $("cambiar-num"), $("cambiar-error"));
+
+      // Salir: olvida la tarjeta en este celular y vuelve a la pantalla de inicio
+      $("salir").addEventListener("click", function () {
+        if (!confirm("¿Salir de la tarjeta " + formato(actual) + " en este celular? Los sellos no se pierden: siguen en esa tarjeta.")) return;
+        try { localStorage.removeItem(CLAVE); } catch (e) {}
+        actual = null; ultimo = null;
+        history.replaceState(null, "", location.pathname);
+        $("tarjeta").hidden = true;
+        $("bienvenida").hidden = false;
+        window.scrollTo(0, 0);
+      });
+
+      // Invitar: comparte el enlace GENERAL (sin el número de esta tarjeta)
+      $("invitar").addEventListener("click", function () {
+        var general = location.origin + location.pathname;
+        var texto = "Únete a la tarjeta de lealtad de DiTutti: cada " + META + " compras te regalan " + listaPremios() + ". Crea la tuya gratis aquí:";
+        if (navigator.share) {
+          navigator.share({ title: "Tarjeta de lealtad DiTutti", text: texto, url: general }).catch(function () {});
+        } else {
+          window.open(waLink(texto + " " + general), "_blank");
+        }
+      });
       document.addEventListener("visibilitychange", function () { if (!document.hidden && actual) cargar(); });
       // Mientras el cliente tiene la tarjeta abierta en caja, se revisa sola cada 20 s
       setInterval(function () { if (!document.hidden && actual) cargar(); }, 20000);
