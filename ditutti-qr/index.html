@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>DiTutti Concept Store | ¿Te están engañando?</title>
   <meta name="description" content="DiTutti Concept Store en Plaza Santa Mónica, junto a Mundo E: regalos de emprendedores locales, talleres creativos y café y snacks. Entérate de todo en nuestras redes.">
-  <meta name="theme-color" content="#FBF5EA">
+  <meta name="theme-color" content="#FFFFFF">
 
   <!-- Vista previa al compartir (Open Graph) -->
-  <!-- PENDIENTE: si la URL final no es https://jluisrojo.github.io/ditutti-qr/, cámbiala en og:url y og:image -->
+  <!-- Si la dirección de la página cambia, actualízala en og:url y og:image -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_MX">
   <meta property="og:site_name" content="DiTutti Concept Store">
@@ -51,19 +51,19 @@
       <h2 id="t-hay">En DiTutti sí hay algo <span class="mano">diferente</span>:</h2>
       <ul class="lista">
         <li>
-          <span class="icono icono--rosa" aria-hidden="true">
+          <span class="icono" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
           </span>
           Regalos de emprendedores locales
         </li>
         <li>
-          <span class="icono icono--amarillo" aria-hidden="true">
+          <span class="icono" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 1 10-10c0 2.2-1.8 3-3.5 3H16a2 2 0 0 0-1.5 3.3c.6.8.2 3.7-2.5 3.7z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="11" cy="6.8" r="1.2"/><circle cx="16" cy="8.5" r="1.2"/></svg>
           </span>
           Talleres creativos
         </li>
         <li>
-          <span class="icono icono--salvia" aria-hidden="true">
+          <span class="icono" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M3 9h14v5a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6zM17 10h1.5a2.5 2.5 0 0 1 0 5H17M7 2.5c-.6.8-.6 1.7 0 2.5M11 2.5c-.6.8-.6 1.7 0 2.5"/></svg>
           </span>
           Café y snacks
@@ -71,16 +71,16 @@
       </ul>
     </section>
 
-    <!--
-      IMÁGENES: aquí va la tira de fotos (entre la lista y las redes).
-      Cuando subas fotos a imagenes/, conviértelas a WebP (ver README) y descomenta este bloque:
-
-    <section class="fotos" aria-label="Fotos de DiTutti">
-      <img src="imagenes/foto-1.webp" width="600" height="600" loading="lazy" decoding="async" alt="DESCRIBE AQUÍ LA FOTO 1">
-      <img src="imagenes/foto-2.webp" width="600" height="600" loading="lazy" decoding="async" alt="DESCRIBE AQUÍ LA FOTO 2">
-      <img src="imagenes/foto-3.webp" width="600" height="600" loading="lazy" decoding="async" alt="DESCRIBE AQUÍ LA FOTO 3">
+    <!-- IMÁGENES: desliza con el dedo. Para cambiar una foto, reemplaza el archivo en imagenes/ (mismo nombre) y actualiza su alt. -->
+    <section class="fotos" aria-label="Fotos de DiTutti" tabindex="0">
+      <img src="imagenes/tienda-interior.webp" width="420" height="525" loading="lazy" decoding="async" alt="Interior de DiTutti: estantes con productos de emprendedores y mesas altas para tomar café">
+      <img src="imagenes/taller-pintura.webp" width="420" height="525" loading="lazy" decoding="async" alt="Personas pintando en un taller creativo dentro de DiTutti">
+      <img src="imagenes/velas-flores.webp" width="420" height="525" loading="lazy" decoding="async" alt="Velas artesanales en forma de flores de colores">
+      <img src="imagenes/crochet-principito.webp" width="420" height="525" loading="lazy" decoding="async" alt="Muñeco tejido a crochet del Principito con una rosa">
+      <img src="imagenes/productos-apapacho.webp" width="420" height="525" loading="lazy" decoding="async" alt="Productos naturales Apapacho: mantequilla corporal, aceite esencial y bálsamo para labios">
+      <img src="imagenes/shampoo-romero.webp" width="420" height="525" loading="lazy" decoding="async" alt="Shampoos sólidos de romero de la marca Algo Simple">
+      <img src="imagenes/joyeria.webp" width="420" height="525" loading="lazy" decoding="async" alt="Estante con collares y pulseras dorados">
     </section>
-    -->
 
     <!-- ===== REDES Y CONTACTO ===== -->
     <section class="bloque" aria-labelledby="t-redes">
@@ -94,12 +94,10 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.3 4.4 5 4.6"/></svg>
           TikTok
         </a>
-        <!-- PENDIENTE: enlace de Facebook de DiTutti. Pégalo en CONFIG.facebook (abajo, en el script). Mientras esté vacío, este botón no se muestra. -->
         <a class="boton boton--facebook" data-enlace="facebook" href="#" target="_blank" rel="noopener" hidden>
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V10H6.5v3.5H9V21h3.5v-7.5H15l.5-3.5h-3V7a1 1 0 0 1 1-1H15z"/></svg>
           Facebook
         </a>
-        <!-- PENDIENTE: número de WhatsApp (52 + 10 dígitos, sin espacios ni signos). Pégalo en CONFIG.whatsapp (abajo, en el script). Mientras esté vacío, este botón no se muestra. -->
         <a class="boton boton--whatsapp" data-enlace="whatsapp" href="#" target="_blank" rel="noopener" hidden>
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/><path d="M9 8.5c0 3 2.5 6.5 6.5 6.5l1-1.5-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z" class="relleno"/></svg>
           WhatsApp
@@ -109,9 +107,9 @@
 
     <!-- ===== UBICACIÓN ===== -->
     <footer class="ubicacion">
-      <!-- PENDIENTE: enlace exacto de Google Maps. Por ahora es una búsqueda de "Plaza Santa Mónica Mundo E". -->
-      <a href="https://www.google.com/maps/search/?api=1&amp;query=Plaza%20Santa%20M%C3%B3nica%20Mundo%20E" target="_blank" rel="noopener">
-        <span aria-hidden="true">📍</span>&nbsp;Plaza Santa Mónica, junto&nbsp;a&nbsp;Mundo&nbsp;E
+      <!-- Mapa: abre Google Maps buscando el negocio. Para usar el enlace exacto, en la app de Maps toca DiTutti → Compartir → Copiar enlace, y pégalo aquí. -->
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=DiTutti%20Concept%20Store%2C%20Plaza%20Santa%20M%C3%B3nica" target="_blank" rel="noopener">
+        <span aria-hidden="true">📍</span>&nbsp;Plaza&nbsp;Santa&nbsp;Mónica, junto&nbsp;a&nbsp;Mundo&nbsp;E
       </a>
     </footer>
 
@@ -123,10 +121,10 @@
        Si un campo está vacío, su botón queda oculto (no hay botones rotos).
        ============================================================ */
     var CONFIG = {
-      // PENDIENTE: enlace completo de Facebook, ej. "https://www.facebook.com/..."
-      facebook: "",
-      // PENDIENTE: 52 + 10 dígitos, sin espacios ni signos (12 dígitos en total)
-      whatsapp: "",
+      // Enlace completo de Facebook. Si lo dejas vacío, el botón se oculta.
+      facebook: "https://www.facebook.com/share/19fk6n8yzA/",
+      // 52 + 10 dígitos, sin espacios ni signos. Si lo dejas vacío, el botón se oculta.
+      whatsapp: "525559416472",
       mensajeWhatsapp: "Hola, vi su cartel y quiero más información"
     };
 

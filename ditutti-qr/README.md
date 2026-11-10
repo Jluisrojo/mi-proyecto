@@ -18,24 +18,27 @@ Al final de `index.html` está esto:
 
 ```js
 var CONFIG = {
-  facebook: "",          // ej. "https://www.facebook.com/tu-pagina"
-  whatsapp: "",          // 52 + 10 dígitos, ej. "52XXXXXXXXXX"
+  facebook: "https://www.facebook.com/share/19fk6n8yzA/",
+  whatsapp: "525559416472",   // 52 + 10 dígitos, sin espacios
   mensajeWhatsapp: "Hola, vi su cartel y quiero más información"
 };
 ```
 
-Pega el dato entre las comillas y guarda. El botón aparece solo cuando el dato es válido; si lo dejas vacío, el botón se oculta.
+Cambia el dato entre las comillas y guarda. Si dejas un dato vacío (`""`), su botón se oculta.
 
 ## Cambiar colores
-Al inicio de `estilos.css`, en el bloque `:root`, cambia los códigos (ej. `--morado: #5E3B7D;`). Toda la página se actualiza.
-Si cambias el color de un botón, cuida que el texto blanco se lea bien (fondo oscuro).
+Al inicio de `estilos.css`, en el bloque `:root`, cambia los códigos: `--blanco`, `--beige`, `--cafe` y `--morado` (ej. `--morado: #5A3E85;`). Toda la página se actualiza.
+El botón de WhatsApp lleva texto blanco sobre `--morado`: usa un morado oscuro para que se lea bien.
 
 ## Cambiar o agregar imágenes
-1. Convierte cada foto a WebP de máximo ~200 KB y 1200 px. Opciones:
-   - Sin instalar nada: [squoosh.app](https://squoosh.app) → formato WebP, calidad ~75, ancho 1200.
-   - Con ImageMagick: `magick foto.jpg -resize 1200x1200\> -quality 75 imagenes/foto-1.webp`
-2. Guárdalas en `imagenes/` como `foto-1.webp`, `foto-2.webp`, `foto-3.webp`.
-3. En `index.html`, busca el comentario `IMÁGENES`, borra las líneas `<!--` y `-->` que lo envuelven y escribe en cada `alt="…"` qué se ve en la foto (ej. "Mesa con velas y jabones artesanales").
+Las fotos están en `imagenes/` y aparecen en una tira que se desliza con el dedo, entre la lista y las redes.
+
+1. Convierte la foto a WebP, de máximo ~200 KB (las actuales miden 420×525 px y pesan 15–45 KB):
+   - Sin instalar nada: en [squoosh.app](https://squoosh.app) elige formato WebP, calidad ~70 y ancho 420.
+   - Con ImageMagick: `magick foto.jpg -resize 420x525^ -gravity center -extent 420x525 -quality 66 imagenes/nombre.webp`
+2. **Cambiar una foto:** guárdala con el mismo nombre que la anterior (ej. `velas-flores.webp`) y actualiza su `alt` en `index.html`.
+3. **Agregar una foto:** en `index.html`, dentro de `<section class="fotos">`, copia una línea `<img …>` y cambia el nombre del archivo y el `alt` (describe qué se ve en la foto).
+4. **Quitar una foto:** borra su línea `<img …>`.
 
 Logo: reemplaza `imagenes/logo-ditutti.webp` (mismo nombre). Favicon: `favicon-48.png` y `apple-touch-icon.png`.
 
