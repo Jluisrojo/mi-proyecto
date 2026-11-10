@@ -1,0 +1,229 @@
+/* ==========================================================
+   COLORES DE DITUTTI
+   Cambia aquí los colores de toda la página.
+   (Son propuestas: reemplázalos por los códigos de tu marca.)
+   ========================================================== */
+:root {
+  --crema:          #FBF5EA;  /* fondo */
+  --crema-oscura:   #F3E8D6;  /* tarjetas y detalles */
+  --cafe:           #3B2A20;  /* texto principal (tono del logo) */
+  --cafe-suave:     #6A5444;  /* texto secundario */
+  --morado:         #5E3B7D;  /* Instagram, acentos */
+  --rosa:           #EFB7C6;  /* decoración */
+  --rosa-fuerte:    #A8385F;  /* TikTok */
+  --amarillo:       #F5DD8C;  /* subrayado, decoración */
+  --salvia:         #B5C7AA;  /* decoración */
+  --salvia-oscuro:  #3E6644;  /* WhatsApp */
+  --azul-facebook:  #3B5A9A;  /* Facebook */
+  --texto-boton:    #FFFFFF;
+
+  --fuente-titulos: "Fraunces", Georgia, "Times New Roman", serif;
+  --fuente-mano:    "Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --fuente-texto:   system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --radio: 18px;
+  color-scheme: light;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--crema);
+  /* manchas suaves de color, como acuarela */
+  background-image:
+    radial-gradient(circle at 105% -5%, color-mix(in srgb, var(--rosa) 55%, transparent) 0 120px, transparent 121px),
+    radial-gradient(circle at -12% 38%, color-mix(in srgb, var(--salvia) 45%, transparent) 0 110px, transparent 111px),
+    radial-gradient(circle at 110% 82%, color-mix(in srgb, var(--amarillo) 55%, transparent) 0 130px, transparent 131px);
+  background-repeat: no-repeat;
+  color: var(--cafe);
+  font-family: var(--fuente-texto);
+  font-size: 17px;
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+
+.pagina {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+}
+
+/* ---------- pantalla principal ---------- */
+.portada {
+  text-align: center;
+  padding: 4px 0 20px;
+}
+.logo {
+  display: block;
+  width: 96px;
+  height: auto;
+  margin: 0 auto 14px;
+}
+.titular {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 10vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+}
+.titular .emoji { font-size: 0.85em; }
+.junto { white-space: nowrap; }
+.subtitulo {
+  font-size: 1.06rem;
+  color: var(--cafe-suave);
+  margin: 0 auto;
+  max-width: 30ch;
+}
+
+/* palabras clave escritas "a mano" */
+.mano {
+  font-family: var(--fuente-mano);
+  font-weight: 600;
+  font-size: 1.22em;
+  color: var(--morado);
+  letter-spacing: 0;
+}
+.subrayado {
+  background: linear-gradient(transparent 62%, var(--amarillo) 62% 92%, transparent 92%);
+  padding: 0 0.08em;
+}
+
+/* ---------- bloques ---------- */
+.bloque {
+  background: color-mix(in srgb, #fff 55%, var(--crema));
+  border: 1.5px solid var(--crema-oscura);
+  border-radius: var(--radio);
+  padding: 18px 16px 20px;
+  margin-top: 16px;
+}
+.bloque h2 {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-size: 1.32rem;
+  line-height: 1.2;
+  margin: 0 0 14px;
+}
+
+/* lista con íconos */
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.lista li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 1.04rem;
+}
+.icono {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--cafe);
+}
+.icono--rosa     { background: var(--rosa); }
+.icono--amarillo { background: var(--amarillo); }
+.icono--salvia   { background: var(--salvia); }
+.icono svg, .boton svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icono .relleno, .icono circle, .boton .relleno { fill: currentColor; stroke: none; }
+.boton circle:not(.relleno) { fill: none; stroke: currentColor; }
+
+/* ---------- fotos (cuando se agreguen) ---------- */
+.fotos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.fotos img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--crema-oscura);
+}
+
+/* ---------- botones de redes ---------- */
+.botones {
+  display: grid;
+  gap: 10px;
+}
+.boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: var(--texto-boton);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.06rem;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--cafe) 25%, transparent);
+  transition: transform .12s ease, box-shadow .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.boton[hidden] { display: none; }
+.boton:active { transform: translateY(2px); box-shadow: 0 1px 0 color-mix(in srgb, var(--cafe) 25%, transparent); }
+.boton:focus-visible, .ubicacion a:focus-visible {
+  outline: 3px solid var(--cafe);
+  outline-offset: 3px;
+}
+.boton--instagram { background: var(--morado); }
+.boton--tiktok    { background: var(--rosa-fuerte); }
+.boton--facebook  { background: var(--azul-facebook); }
+.boton--whatsapp  { background: var(--salvia-oscuro); order: -1; } /* cuando aparezca, va primero */
+
+/* ---------- ubicación ---------- */
+.ubicacion {
+  text-align: center;
+  margin-top: 20px;
+}
+.ubicacion a {
+  display: inline-block;
+  text-wrap: balance;
+  min-height: 48px;
+  padding: 12px 8px;
+  line-height: 1.6;
+  color: var(--cafe);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--rosa);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  border-radius: 12px;
+}
+
+/* ---------- computadora ---------- */
+@media (min-width: 720px) {
+  body { font-size: 18px; }
+  .pagina { max-width: 560px; padding-top: 48px; }
+  .logo { width: 120px; }
+  .botones { grid-template-columns: 1fr 1fr; }
+  .boton:hover { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton { transition: none; }
+}
